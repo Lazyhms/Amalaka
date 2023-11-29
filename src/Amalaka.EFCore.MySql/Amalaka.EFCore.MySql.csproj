@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<AssemblyName>Amalaka.EntityFrameworkCore.MySql</AssemblyName>
+		<RootNamespace>Microsoft.EntityFrameworkCore</RootNamespace>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Using Include="System.Reflection" />
+		<Using Include="System.ComponentModel" />
+		<Using Include="Microsoft.EntityFrameworkCore" />
+		<Using Include="Microsoft.EntityFrameworkCore.Infrastructure" />
+		<Using Include="Microsoft.EntityFrameworkCore.Metadata" />
+		<Using Include="Microsoft.EntityFrameworkCore.Metadata.Builders" />
+		<Using Include="Microsoft.EntityFrameworkCore.Metadata.Conventions" />
+		<Using Include="Microsoft.EntityFrameworkCore.Metadata.Conventions.Infrastructure" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Amalaka.EFCore.Relational\Amalaka.EFCore.Relational.csproj" />
+	</ItemGroup>
+
+</Project>
+
