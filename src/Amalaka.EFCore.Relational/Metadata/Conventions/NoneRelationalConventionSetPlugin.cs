@@ -1,7 +1,11 @@
-﻿namespace Amalaka.EntityFrameworkCore.Metadata.Conventions;
+﻿using Amalaka.EntityFrameworkCore.Infrastructure.Internal;
 
-public class ConventionSetPlugin(ProviderConventionSetBuilderDependencies dependencies) : IConventionSetPlugin
+namespace Amalaka.EntityFrameworkCore.Metadata.Conventions;
+
+public class NoneRelationalConventionSetPlugin(INoneRelationalOptions sqlOptions, ProviderConventionSetBuilderDependencies dependencies) : IConventionSetPlugin
 {
+    protected INoneRelationalOptions SqlOptions { get; } = sqlOptions;
+
     protected ProviderConventionSetBuilderDependencies Dependencies { get; } = dependencies;
 
     public virtual ConventionSet ModifyConventions(ConventionSet conventionSet)
@@ -23,6 +27,11 @@ public class ConventionSetPlugin(ProviderConventionSetBuilderDependencies depend
         var etherealColumnInsertIgnoreConvention = new ColumnAddIgnoreConvention(Dependencies);
         conventionSet.PropertyAddedConventions.Add(etherealColumnInsertIgnoreConvention);
         conventionSet.PropertyFieldChangedConventions.Add(etherealColumnInsertIgnoreConvention);
+
+        if (SqlOptions.NoneForeignKey)
+        {
+            conventionSet.Remove(typeof(ForeignKeyIndexConvention));
+        }
 
         return conventionSet;
     }

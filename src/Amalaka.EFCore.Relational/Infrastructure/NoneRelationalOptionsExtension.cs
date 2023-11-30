@@ -3,14 +3,38 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Amalaka.EntityFrameworkCore.Infrastructure;
 
-public class DbContextOptionsExtension : IDbContextOptionsExtension
+public class NoneRelationalOptionsExtension : IDbContextOptionsExtension
 {
     private DbContextOptionsExtensionInfo? _info;
+
+    public NoneRelationalOptionsExtension()
+    {
+        NoneForeignKey = false;
+    }
+
+    protected NoneRelationalOptionsExtension(NoneRelationalOptionsExtension copyFrom)
+    {
+        NoneForeignKey = copyFrom.NoneForeignKey;
+    }
 
     public virtual DbContextOptionsExtensionInfo Info
         => _info ??= new ExtensionInfo(this);
 
-    public void ApplyServices(IServiceCollection services)
+    protected virtual NoneRelationalOptionsExtension Clone()
+    {
+        return new NoneRelationalOptionsExtension(this);
+    }
+
+    public bool NoneForeignKey { get; private set; }
+
+    public NoneRelationalOptionsExtension WithNoneForeignKey()
+    {
+        var clone = Clone();
+        clone.NoneForeignKey = true;
+        return clone;
+    }
+
+    public virtual void ApplyServices(IServiceCollection services)
     {
         services.AddEntityFrameworkCoreServices();
     }

@@ -1,17 +1,23 @@
 ﻿namespace Amalaka.EntityFrameworkCore.Infrastructure;
 
-public abstract class DbContextOptionsBuilder<TBuilder, TExtension>(DbContextOptionsBuilder optionsBuilder) : IRelationalDbContextOptionsBuilderInfrastructure
-    where TBuilder : DbContextOptionsBuilder<TBuilder, TExtension>
-    where TExtension : DbContextOptionsExtension, new()
+public abstract class NoneRelationalDbContextOptionsBuilder<TBuilder, TExtension>(DbContextOptionsBuilder optionsBuilder) : IRelationalDbContextOptionsBuilderInfrastructure
+    where TBuilder : NoneRelationalDbContextOptionsBuilder<TBuilder, TExtension>
+    where TExtension : NoneRelationalOptionsExtension, new()
 {
     public DbContextOptionsBuilder OptionsBuilder { get; } = optionsBuilder;
 
     DbContextOptionsBuilder IRelationalDbContextOptionsBuilderInfrastructure.OptionsBuilder => OptionsBuilder;
 
+    public virtual TBuilder WithNoneForeignKey()
+    {
+        OptionsBuilder.Options.FindExtension<CoreOptionsExtension>();
+
+        return WithOption(e => (TExtension)e.WithNoneForeignKey());
+    }
+
     protected virtual TBuilder WithOption(Func<TExtension, TExtension> setAction)
     {
-        ((IDbContextOptionsBuilderInfrastructure)OptionsBuilder).AddOrUpdateExtension(
-            setAction(OptionsBuilder.Options.FindExtension<TExtension>() ?? new TExtension()));
+        ((IDbContextOptionsBuilderInfrastructure)OptionsBuilder).AddOrUpdateExtension(setAction(OptionsBuilder.Options.FindExtension<TExtension>() ?? new TExtension()));
         return (TBuilder)this;
     }
 
@@ -19,7 +25,7 @@ public abstract class DbContextOptionsBuilder<TBuilder, TExtension>(DbContextOpt
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     public override bool Equals(object? obj)
-=> base.Equals(obj);
+        => base.Equals(obj);
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     public override int GetHashCode()
