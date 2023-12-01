@@ -1,6 +1,4 @@
-﻿using Amalaka.EntityFrameworkCore.SqlServer.Infrastructure;
-
-namespace Microsoft.EntityFrameworkCore;
+﻿namespace Microsoft.EntityFrameworkCore;
 
 public static class NoneRelationalMySqlDbContextOptionsBuilderExtensions
 {

@@ -1,7 +1,6 @@
-﻿using Amalaka.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Amalaka.EntityFrameworkCore.SqlServer.Infrastructure;
+namespace Microsoft.EntityFrameworkCore;
 
 public class NoneRelationalMySqlDbContextOptionsBuilder(DbContextOptionsBuilder optionsBuilder)
     : NoneRelationalDbContextOptionsBuilder<NoneRelationalMySqlDbContextOptionsBuilder, NoneRelationalMySqOptionsExtension>(optionsBuilder)
@@ -11,4 +10,20 @@ public class NoneRelationalMySqlDbContextOptionsBuilder(DbContextOptionsBuilder 
         OptionsBuilder.ReplaceService<IMigrationsSqlGenerator, NoneRelationalMySqlMigrationsSqlGenerator>();
         return this;
     }
+
+    #region Hidden System.Object members
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override bool Equals(object? obj)
+        => base.Equals(obj);
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override int GetHashCode()
+        => base.GetHashCode();
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override string? ToString()
+        => base.ToString();
+
+    #endregion
 }

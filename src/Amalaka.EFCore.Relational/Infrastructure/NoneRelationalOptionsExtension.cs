@@ -10,11 +10,13 @@ public class NoneRelationalOptionsExtension : IDbContextOptionsExtension
     public NoneRelationalOptionsExtension()
     {
         NoneForeignKey = false;
+        SoftDelete = new SoftDeleteOptions();
     }
 
     protected NoneRelationalOptionsExtension(NoneRelationalOptionsExtension copyFrom)
     {
         NoneForeignKey = copyFrom.NoneForeignKey;
+        SoftDelete = copyFrom.SoftDelete;
     }
 
     public virtual DbContextOptionsExtensionInfo Info
@@ -27,10 +29,19 @@ public class NoneRelationalOptionsExtension : IDbContextOptionsExtension
 
     public bool NoneForeignKey { get; private set; }
 
+    public SoftDeleteOptions SoftDelete { get; private set; }
+
     public NoneRelationalOptionsExtension WithNoneForeignKey()
     {
         var clone = Clone();
         clone.NoneForeignKey = true;
+        return clone;
+    }
+
+    public NoneRelationalOptionsExtension UseSoftDelete(string? columnName, string? comment)
+    {
+        var clone = Clone();
+        clone.SoftDelete = new SoftDeleteOptions(columnName, comment) { Enabled = true };
         return clone;
     }
 
@@ -60,4 +71,20 @@ public class NoneRelationalOptionsExtension : IDbContextOptionsExtension
         public override string LogFragment
             => "using Amalaka.EFCore ";
     }
+
+    #region Hidden System.Object members
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override bool Equals(object? obj)
+        => base.Equals(obj);
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override int GetHashCode()
+        => base.GetHashCode();
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override string? ToString()
+        => base.ToString();
+
+    #endregion
 }

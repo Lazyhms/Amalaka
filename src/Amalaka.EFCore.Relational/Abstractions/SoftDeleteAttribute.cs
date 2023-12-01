@@ -7,7 +7,7 @@ public sealed class SoftDeleteAttribute(string columnName, string? comment = nul
     {
     }
 
-    public required string ColumnName { get; init; } = columnName;
+    public string ColumnName { get; init; } = columnName;
 
     public string? Comment { get; set; } = comment;
 }

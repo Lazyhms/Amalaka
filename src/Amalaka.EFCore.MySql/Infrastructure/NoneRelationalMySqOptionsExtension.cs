@@ -1,6 +1,6 @@
 ﻿using Amalaka.EntityFrameworkCore.Infrastructure;
 
-namespace Amalaka.EntityFrameworkCore.SqlServer.Infrastructure;
+namespace Microsoft.EntityFrameworkCore.Infrastructure;
 
 public class NoneRelationalMySqOptionsExtension : NoneRelationalOptionsExtension
 {
@@ -17,7 +17,7 @@ public class NoneRelationalMySqOptionsExtension : NoneRelationalOptionsExtension
     public override DbContextOptionsExtensionInfo Info
         => _info ??= new MySqlExtensionInfo(this);
 
-    protected override NoneRelationalMySqOptionsExtension Clone() 
+    protected override NoneRelationalMySqOptionsExtension Clone()
         => new(this);
 
     private sealed class MySqlExtensionInfo(IDbContextOptionsExtension extension) : ExtensionInfo(extension)

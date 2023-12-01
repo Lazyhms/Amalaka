@@ -1,19 +1,20 @@
-﻿namespace Amalaka.EntityFrameworkCore.Infrastructure;
+﻿using Amalaka.EntityFrameworkCore.Infrastructure;
+
+namespace Microsoft.EntityFrameworkCore.Infrastructure;
 
 public abstract class NoneRelationalDbContextOptionsBuilder<TBuilder, TExtension>(DbContextOptionsBuilder optionsBuilder) : IRelationalDbContextOptionsBuilderInfrastructure
     where TBuilder : NoneRelationalDbContextOptionsBuilder<TBuilder, TExtension>
     where TExtension : NoneRelationalOptionsExtension, new()
 {
-    public DbContextOptionsBuilder OptionsBuilder { get; } = optionsBuilder;
+    protected virtual DbContextOptionsBuilder OptionsBuilder { get; } = optionsBuilder;
 
     DbContextOptionsBuilder IRelationalDbContextOptionsBuilderInfrastructure.OptionsBuilder => OptionsBuilder;
 
     public virtual TBuilder WithNoneForeignKey()
-    {
-        OptionsBuilder.Options.FindExtension<CoreOptionsExtension>();
+        => WithOption(e => (TExtension)e.WithNoneForeignKey());
 
-        return WithOption(e => (TExtension)e.WithNoneForeignKey());
-    }
+    public virtual TBuilder UseSoftDelete(string? columnName = null, string? comment = null)
+        => WithOption(e => (TExtension)e.UseSoftDelete(columnName, comment));
 
     protected virtual TBuilder WithOption(Func<TExtension, TExtension> setAction)
     {

@@ -1,6 +1,6 @@
 ﻿using Amalaka.EntityFrameworkCore.Infrastructure;
 
-namespace Amalaka.EntityFrameworkCore.SqlServer.Infrastructure;
+namespace Microsoft.EntityFrameworkCore.Infrastructure;
 
 public class NoneRelationalSqlServerOptionsExtension : NoneRelationalOptionsExtension
 {

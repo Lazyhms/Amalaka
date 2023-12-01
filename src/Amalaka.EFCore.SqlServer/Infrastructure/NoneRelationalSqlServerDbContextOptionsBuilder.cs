@@ -1,7 +1,6 @@
-﻿using Amalaka.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Amalaka.EntityFrameworkCore.SqlServer.Infrastructure;
+namespace Microsoft.EntityFrameworkCore;
 
 public class NoneRelationalSqlServerDbContextOptionsBuilder(DbContextOptionsBuilder optionsBuilder) :
     NoneRelationalDbContextOptionsBuilder<NoneRelationalSqlServerDbContextOptionsBuilder, NoneRelationalSqlServerOptionsExtension>(optionsBuilder)
