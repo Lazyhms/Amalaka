@@ -28,7 +28,7 @@ public static class DbSetExtensions
     {
         foreach (var primaryKeyValue in primaryKeyValues)
         {
-            Remove(source, primaryKeyValue);
+            source.SoftRemove(primaryKeyValue);
         }
     }
 
@@ -36,7 +36,7 @@ public static class DbSetExtensions
     {
         foreach (var primaryKeyValue in primaryKeyValues)
         {
-            Remove(source, primaryKeyValue);
+            source.SoftRemove(primaryKeyValue);
         }
     }
 
@@ -44,7 +44,7 @@ public static class DbSetExtensions
     {
         foreach (var objectInstance in objectInstances)
         {
-            Remove(source, objectInstance);
+            source.SoftRemove(objectInstance);
         }
     }
 
@@ -58,7 +58,7 @@ public static class DbSetExtensions
         => source.Entry(new TSource()).SoftRemove((entityEntry, properties) => entityEntry.Property(properties[0]).CurrentValue = objectInstance);
 
     public static EntityEntry<TSource> SoftRemove<TSource>(this DbSet<TSource> source, TSource objectInstance) where TSource : class, new()
-        => source.Entry(objectInstance);
+        => source.Entry(objectInstance).SoftRemove();
 
     public static void SoftRemoveRange<TSource>(this DbSet<TSource> source, params string[] primaryKeyValues) where TSource : class, new()
         => source.SoftRemoveRange((IEnumerable<string>)primaryKeyValues);
@@ -76,7 +76,7 @@ public static class DbSetExtensions
     {
         foreach (var primaryKeyValue in primaryKeyValues)
         {
-            SoftRemove(source, primaryKeyValue);
+            source.SoftRemove(primaryKeyValue);
         }
     }
 
@@ -84,7 +84,7 @@ public static class DbSetExtensions
     {
         foreach (var primaryKeyValue in primaryKeyValues)
         {
-            SoftRemove(source, primaryKeyValue);
+            source.SoftRemove(primaryKeyValue);
         }
     }
 
@@ -92,7 +92,7 @@ public static class DbSetExtensions
     {
         foreach (var objectInstance in objectInstances)
         {
-            SoftRemove(source, objectInstance);
+            source.SoftRemove(objectInstance);
         }
     }
 
@@ -100,7 +100,7 @@ public static class DbSetExtensions
     {
         foreach (var objectInstance in objectInstances)
         {
-            SoftRemove(source, objectInstance);
+            source.SoftRemove(objectInstance);
         }
     }
 
