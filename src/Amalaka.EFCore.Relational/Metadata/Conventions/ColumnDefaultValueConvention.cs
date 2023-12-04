@@ -10,7 +10,7 @@ public sealed class ColumnDefaultValueConvention(ProviderConventionSetBuilderDep
     {
         if (attribute.Value is not null)
         {
-            propertyBuilder.HasDefaultValue(attribute.Value, true);
+            propertyBuilder.HasDefaultValue(attribute.Value);
         }
     }
 }

@@ -11,7 +11,6 @@ public class NoneRelationalSqlServerDbContextOptionsBuilder(DbContextOptionsBuil
         return this;
     }
 
-
     #region Hidden System.Object members
 
     [EditorBrowsable(EditorBrowsableState.Never)]

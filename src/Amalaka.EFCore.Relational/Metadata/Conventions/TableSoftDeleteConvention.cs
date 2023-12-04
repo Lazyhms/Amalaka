@@ -29,8 +29,8 @@ public sealed class TableSoftDeleteConvention(SoftDeleteOptions softDelete) : IE
 
     private void ProcessEntityTypeAdded(IConventionEntityTypeBuilder entityTypeBuilder, Type clrType, string columnName, string? comment)
     {
-        entityTypeBuilder.Property(typeof(bool), columnName, true)!
-                         .HasComment(comment, true)!
+        entityTypeBuilder.Property(typeof(bool), columnName)!
+                         .HasComment(comment)!
                          .HasDefaultValue(false);
 
         var parameter = Expression.Parameter(clrType);

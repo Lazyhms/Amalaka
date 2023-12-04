@@ -10,7 +10,7 @@ public sealed class ColumnDefaultValueSqlConvention(ProviderConventionSetBuilder
     {
         if (!string.IsNullOrWhiteSpace(attribute.Value))
         {
-            propertyBuilder.HasDefaultValueSql(attribute.Value, true);
+            propertyBuilder.HasDefaultValueSql(attribute.Value);
         }
     }
 }

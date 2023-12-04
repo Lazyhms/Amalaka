@@ -1,6 +1,6 @@
 ﻿namespace Microsoft.EntityFrameworkCore;
 
-[AttributeUsage(AttributeTargets.Class)]
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 public sealed class SoftDeleteAttribute(string columnName, string? comment = null) : Attribute
 {
     public SoftDeleteAttribute() : this("IsDeleted", null)
