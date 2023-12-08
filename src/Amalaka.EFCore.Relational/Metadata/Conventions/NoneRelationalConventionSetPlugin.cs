@@ -2,7 +2,9 @@
 
 namespace Amalaka.EntityFrameworkCore.Metadata.Conventions;
 
-public class NoneRelationalConventionSetPlugin(INoneRelationalOptions noneRelationalOptions, ProviderConventionSetBuilderDependencies dependencies) : IConventionSetPlugin
+public class NoneRelationalConventionSetPlugin(
+    INoneRelationalOptions noneRelationalOptions,
+    ProviderConventionSetBuilderDependencies dependencies) : IConventionSetPlugin
 {
     protected INoneRelationalOptions NoneRelationalOptions { get; } = noneRelationalOptions;
 
@@ -10,28 +12,30 @@ public class NoneRelationalConventionSetPlugin(INoneRelationalOptions noneRelati
 
     public virtual ConventionSet ModifyConventions(ConventionSet conventionSet)
     {
-        conventionSet.EntityTypeAddedConventions.Add(new TableSoftDeleteConvention(NoneRelationalOptions.SoftDelete));
+        var columnDefaultValueConvention = new ColumnDefaultValueConvention(Dependencies);
+        conventionSet.PropertyAddedConventions.Add(columnDefaultValueConvention);
+        conventionSet.PropertyFieldChangedConventions.Add(columnDefaultValueConvention);
 
-        var etherealColumnDefaultValueConvention = new ColumnDefaultValueConvention(Dependencies);
-        conventionSet.PropertyAddedConventions.Add(etherealColumnDefaultValueConvention);
-        conventionSet.PropertyFieldChangedConventions.Add(etherealColumnDefaultValueConvention);
+        var columnDefaultValueSqlConvention = new ColumnDefaultValueSqlConvention(Dependencies);
+        conventionSet.PropertyAddedConventions.Add(columnDefaultValueSqlConvention);
+        conventionSet.PropertyFieldChangedConventions.Add(columnDefaultValueSqlConvention);
 
-        var etherealColumnDefaultValueSqlConvention = new ColumnDefaultValueSqlConvention(Dependencies);
-        conventionSet.PropertyAddedConventions.Add(etherealColumnDefaultValueSqlConvention);
-        conventionSet.PropertyFieldChangedConventions.Add(etherealColumnDefaultValueSqlConvention);
+        var columnUpdateIgnoreConvention = new ColumnUpdateIgnoreConvention(Dependencies);
+        conventionSet.PropertyAddedConventions.Add(columnUpdateIgnoreConvention);
+        conventionSet.PropertyFieldChangedConventions.Add(columnUpdateIgnoreConvention);
 
-        var etherealColumnUpdateIgnoreConvention = new ColumnUpdateIgnoreConvention(Dependencies);
-        conventionSet.PropertyAddedConventions.Add(etherealColumnUpdateIgnoreConvention);
-        conventionSet.PropertyFieldChangedConventions.Add(etherealColumnUpdateIgnoreConvention);
-
-        var etherealColumnInsertIgnoreConvention = new ColumnAddIgnoreConvention(Dependencies);
-        conventionSet.PropertyAddedConventions.Add(etherealColumnInsertIgnoreConvention);
-        conventionSet.PropertyFieldChangedConventions.Add(etherealColumnInsertIgnoreConvention);
+        var columnInsertIgnoreConvention = new ColumnAddIgnoreConvention(Dependencies);
+        conventionSet.PropertyAddedConventions.Add(columnInsertIgnoreConvention);
+        conventionSet.PropertyFieldChangedConventions.Add(columnInsertIgnoreConvention);
 
         if (NoneRelationalOptions.NoneForeignKey)
         {
             conventionSet.Remove(typeof(ForeignKeyIndexConvention));
         }
+
+        var tableSoftDeleteConvention = new TableSoftDeleteConvention(NoneRelationalOptions.SoftDelete);
+        conventionSet.EntityTypeAddedConventions.Add(tableSoftDeleteConvention);
+        conventionSet.ModelFinalizingConventions.Add(tableSoftDeleteConvention);
 
         return conventionSet;
     }

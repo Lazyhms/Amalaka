@@ -2,10 +2,8 @@
 
 namespace Amalaka.EntityFrameworkCore.Metadata.Conventions;
 
-public sealed class TableSoftDeleteConvention(SoftDeleteOptions softDelete) : IEntityTypeAddedConvention
+public sealed class TableSoftDeleteConvention(SoftDeleteOptions softDeleteOptions) : IEntityTypeAddedConvention, IModelFinalizingConvention
 {
-    public SoftDeleteOptions SoftDelete { get; init; } = softDelete;
-
     public void ProcessEntityTypeAdded(
         IConventionEntityTypeBuilder entityTypeBuilder,
         IConventionContext<IConventionEntityTypeBuilder> context)
@@ -16,35 +14,42 @@ public sealed class TableSoftDeleteConvention(SoftDeleteOptions softDelete) : IE
             return;
         }
 
-        if (SoftDelete.Enabled && !clrType.IsDefined(typeof(HardDeleteAttribute)))
+        if (softDeleteOptions.Enabled && !clrType.IsDefined(typeof(HardDeleteAttribute)))
         {
-            ProcessEntityTypeAdded(entityTypeBuilder, clrType, SoftDelete.ColumnName, SoftDelete.Comment);
+            entityTypeBuilder.Property(typeof(bool), softDeleteOptions.ColumnName)!.HasComment(softDeleteOptions.Comment)!.HasDefaultValue(false);
         }
-        else if (!SoftDelete.Enabled && clrType.IsDefined(typeof(SoftDeleteAttribute)))
+        else if (!softDeleteOptions.Enabled && clrType.IsDefined(typeof(SoftDeleteAttribute)))
         {
             var softDeleteAttribute = clrType.GetCustomAttribute<SoftDeleteAttribute>();
-            ProcessEntityTypeAdded(entityTypeBuilder, clrType, softDeleteAttribute!.ColumnName, softDeleteAttribute!.Comment);
+            entityTypeBuilder.Property(typeof(bool), softDeleteAttribute!.ColumnName)!.HasComment(softDeleteAttribute!.Comment)!.HasDefaultValue(false);
         }
     }
 
-    private void ProcessEntityTypeAdded(IConventionEntityTypeBuilder entityTypeBuilder, Type clrType, string columnName, string? comment)
+    public void ProcessModelFinalizing(IConventionModelBuilder modelBuilder, IConventionContext<IConventionModelBuilder> context)
     {
-        entityTypeBuilder.Property(typeof(bool), columnName)!
-                         .HasComment(comment)!
-                         .HasDefaultValue(false);
+        foreach (var conventionEntityType in modelBuilder.Metadata.GetEntityTypes())
+        {
+            if (softDeleteOptions.Enabled && !conventionEntityType.ClrType.IsDefined(typeof(HardDeleteAttribute)))
+            {
+                ProcessModelFinalizing(conventionEntityType, softDeleteOptions.ColumnName);
+            }
+            else if (!softDeleteOptions.Enabled && conventionEntityType.ClrType.IsDefined(typeof(SoftDeleteAttribute)))
+            {
+                var softDeleteAttribute = conventionEntityType.ClrType.GetCustomAttribute<SoftDeleteAttribute>();
+                ProcessModelFinalizing(conventionEntityType, softDeleteAttribute!.ColumnName);
+            }
+        }
+    }
 
-        var parameter = Expression.Parameter(clrType);
-        entityTypeBuilder.HasQueryFilter(
-            Expression.Lambda(
-                Expression.Equal(
-                    Expression.Call(
-                        typeof(EF),
-                        nameof(EF.Property),
-                        [typeof(bool)],
-                        parameter,
-                        Expression.Constant(columnName)),
-                    Expression.Constant(false)),
-                parameter),
-            true);
+    public void ProcessModelFinalizing(IConventionEntityType conventionEntityType, string columnName)
+    {
+        var queryFilterExpression = conventionEntityType.GetQueryFilter();
+        var parameterExpression = queryFilterExpression?.Parameters[0] ?? Expression.Parameter(conventionEntityType.ClrType, "filter");
+        var methodCallExpression = Expression.Call(typeof(EF), nameof(EF.Property), [typeof(bool)], parameterExpression, Expression.Constant(columnName));
+        queryFilterExpression = queryFilterExpression == null
+            ? Expression.Lambda(Expression.Equal(methodCallExpression, Expression.Constant(false)), parameterExpression)
+            : Expression.Lambda(Expression.AndAlso(queryFilterExpression.Body, Expression.Equal(methodCallExpression, Expression.Constant(false))), parameterExpression);
+
+        conventionEntityType.SetQueryFilter(queryFilterExpression);
     }
 }
