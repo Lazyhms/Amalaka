@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace Microsoft.EntityFrameworkCore
 {
-    public static class EntityFrameworkCoreQueryableExtensions
+    public static partial class EntityFrameworkCoreQueryableExtensions
     {
         public static Task<bool> AnyAsync<TSource>(
             this IQueryable<TSource> source,
@@ -48,21 +48,7 @@ namespace Microsoft.EntityFrameworkCore
             CancellationToken cancellationToken = default)
             => condition ? source.FirstOrDefaultAsync(predicate, cancellationToken) : source.FirstOrDefaultAsync(cancellationToken);
 
-        public static IOrderedQueryable<TSource> OrderBy<TSource, TKey>(
-            this IQueryable<TSource> source,
-            bool condition,
-            Expression<Func<TSource, TKey>> keySelector) where TSource : class
-        {
-            return condition ? source.OrderBy(keySelector) : (IOrderedQueryable<TSource>)source;
-        }
-
-        public static IOrderedQueryable<TSource> OrderBy<TSource>(
-            this IQueryable<TSource> source,
-            bool condition,
-            string propertyOrFieldName) where TSource : class
-        {
-            return condition ? source.OrderBy(propertyOrFieldName) : (IOrderedQueryable<TSource>)source;
-        }
+        #region OrderBy
 
         public static IOrderedQueryable<TSource> OrderBy<TSource>(
             this IQueryable<TSource> source,
@@ -81,21 +67,25 @@ namespace Microsoft.EntityFrameworkCore
                      : source);
         }
 
-        public static IOrderedQueryable<TSource> ThenBy<TSource, TKey>(
-            this IOrderedQueryable<TSource> source,
-            bool condition,
-            Expression<Func<TSource, TKey>> keySelector) where TSource : class
-        {
-            return condition ? source.ThenBy(keySelector) : source;
-        }
-
-        public static IOrderedQueryable<TSource> ThenBy<TSource>(
-            this IOrderedQueryable<TSource> source,
+        public static IOrderedQueryable<TSource> OrderBy<TSource>(
+            this IQueryable<TSource> source,
             bool condition,
             string propertyOrFieldName) where TSource : class
         {
-            return condition ? source.ThenBy(propertyOrFieldName) : source;
+            return condition ? source.OrderBy(propertyOrFieldName) : (IOrderedQueryable<TSource>)source;
         }
+
+        public static IOrderedQueryable<TSource> OrderBy<TSource, TKey>(
+            this IQueryable<TSource> source,
+            bool condition,
+            Expression<Func<TSource, TKey>> keySelector) where TSource : class
+        {
+            return condition ? source.OrderBy(keySelector) : (IOrderedQueryable<TSource>)source;
+        }
+
+        #endregion
+
+        #region ThenBy
 
         public static IOrderedQueryable<TSource> ThenBy<TSource>(
             this IOrderedQueryable<TSource> source,
@@ -113,21 +103,25 @@ namespace Microsoft.EntityFrameworkCore
                     : source);
         }
 
-        public static IOrderedQueryable<TSource> OrderByDescending<TSource, TKey>(
-            this IQueryable<TSource> source,
-            bool condition,
-            Expression<Func<TSource, TKey>> keySelector) where TSource : class
-        {
-            return condition ? source.OrderByDescending(keySelector) : (IOrderedQueryable<TSource>)source;
-        }
-
-        public static IOrderedQueryable<TSource> OrderByDescending<TSource>(
-            this IQueryable<TSource> source,
+        public static IOrderedQueryable<TSource> ThenBy<TSource>(
+            this IOrderedQueryable<TSource> source,
             bool condition,
             string propertyOrFieldName) where TSource : class
         {
-            return condition ? source.OrderByDescending(propertyOrFieldName) : (IOrderedQueryable<TSource>)source;
+            return condition ? source.ThenBy(propertyOrFieldName) : source;
         }
+
+        public static IOrderedQueryable<TSource> ThenBy<TSource, TKey>(
+            this IOrderedQueryable<TSource> source,
+            bool condition,
+            Expression<Func<TSource, TKey>> keySelector) where TSource : class
+        {
+            return condition ? source.ThenBy(keySelector) : source;
+        }
+
+        #endregion
+
+        #region OrderByDescending
 
         public static IOrderedQueryable<TSource> OrderByDescending<TSource>(
             this IQueryable<TSource> source,
@@ -145,21 +139,25 @@ namespace Microsoft.EntityFrameworkCore
                     : source);
         }
 
-        public static IOrderedQueryable<TSource> ThenByDescending<TSource, TKey>(
-            this IOrderedQueryable<TSource> source,
-            bool condition,
-            Expression<Func<TSource, TKey>> keySelector) where TSource : class
-        {
-            return condition ? source.ThenByDescending(keySelector) : source;
-        }
-
-        public static IOrderedQueryable<TSource> ThenByDescending<TSource>(
-            this IOrderedQueryable<TSource> source,
+        public static IOrderedQueryable<TSource> OrderByDescending<TSource>(
+            this IQueryable<TSource> source,
             bool condition,
             string propertyOrFieldName) where TSource : class
         {
-            return condition ? source.ThenByDescending(propertyOrFieldName) : source;
+            return condition ? source.OrderByDescending(propertyOrFieldName) : (IOrderedQueryable<TSource>)source;
         }
+
+        public static IOrderedQueryable<TSource> OrderByDescending<TSource, TKey>(
+            this IQueryable<TSource> source,
+            bool condition,
+            Expression<Func<TSource, TKey>> keySelector) where TSource : class
+        {
+            return condition ? source.OrderByDescending(keySelector) : (IOrderedQueryable<TSource>)source;
+        }
+
+        #endregion
+
+        #region ThenByDescending
 
         public static IOrderedQueryable<TSource> ThenByDescending<TSource>(
             this IOrderedQueryable<TSource> source,
@@ -177,10 +175,30 @@ namespace Microsoft.EntityFrameworkCore
                     : source);
         }
 
+        public static IOrderedQueryable<TSource> ThenByDescending<TSource>(
+            this IOrderedQueryable<TSource> source,
+            bool condition,
+            string propertyOrFieldName) where TSource : class
+        {
+            return condition ? source.ThenByDescending(propertyOrFieldName) : source;
+        }
+
+        public static IOrderedQueryable<TSource> ThenByDescending<TSource, TKey>(
+            this IOrderedQueryable<TSource> source,
+            bool condition,
+            Expression<Func<TSource, TKey>> keySelector) where TSource : class
+        {
+            return condition ? source.ThenByDescending(keySelector) : source;
+        }
+
+        #endregion
+
+        #region ToPagedList
+
         public static DbPagination<TSource> ToPagedList<TSource>(
-           this IQueryable<TSource> source,
-           int pageIndex,
-           int pageSize) where TSource : class
+            this IQueryable<TSource> source,
+            int pageIndex,
+            int pageSize) where TSource : class
         {
             var dbPagination = new DbPagination<TSource>(pageIndex, pageSize)
             {
@@ -202,17 +220,25 @@ namespace Microsoft.EntityFrameworkCore
             return source.Where(predicate).ToPagedList(pageIndex, pageSize);
         }
 
-        public static DbPagination<TSource> ToOrderPagedList<TSource, TKey>(
+        public static DbPagination<TSource> ToPagedList<TSource>(
            this IQueryable<TSource> source,
-           Expression<Func<TSource, bool>> predicate,
+           string propertyOrFieldName,
+           int pageIndex = 1,
+           int pageSize = 10) where TSource : class
+        {
+            return source.OrderBy(propertyOrFieldName).ToPagedList(pageIndex, pageSize);
+        }
+
+        public static DbPagination<TSource> ToPagedList<TSource, TKey>(
+           this IQueryable<TSource> source,
            Expression<Func<TSource, TKey>> keySelector,
            int pageIndex = 1,
            int pageSize = 10) where TSource : class
         {
-            return source.Where(predicate).OrderBy(keySelector).ToPagedList(pageIndex, pageSize);
+            return source.OrderBy(keySelector).ToPagedList(pageIndex, pageSize);
         }
 
-        public static DbPagination<TSource> ToOrderPagedListAsync<TSource, TKey>(
+        public static DbPagination<TSource> ToPagedList<TSource>(
            this IQueryable<TSource> source,
            Expression<Func<TSource, bool>> predicate,
            string propertyOrFieldName,
@@ -222,17 +248,39 @@ namespace Microsoft.EntityFrameworkCore
             return source.Where(predicate).OrderBy(propertyOrFieldName).ToPagedList(pageIndex, pageSize);
         }
 
-        public static DbPagination<TSource> ToOrderDescendingPagedListAsync<TSource, TKey>(
+        public static DbPagination<TSource> ToPagedList<TSource, TKey>(
            this IQueryable<TSource> source,
            Expression<Func<TSource, bool>> predicate,
            Expression<Func<TSource, TKey>> keySelector,
            int pageIndex = 1,
            int pageSize = 10) where TSource : class
         {
-            return source.Where(predicate).OrderByDescending(keySelector).ToPagedList(pageIndex, pageSize);
+            return source.Where(predicate).OrderBy(keySelector).ToPagedList(pageIndex, pageSize);
         }
 
-        public static DbPagination<TSource> ToOrderDescendingPagedList<TSource, TKey>(
+        #endregion
+
+        #region ToDescendingPagedList
+
+        public static DbPagination<TSource> ToDescendingPagedList<TSource>(
+           this IQueryable<TSource> source,
+           string propertyOrFieldName,
+           int pageIndex = 1,
+           int pageSize = 10) where TSource : class
+        {
+            return source.OrderByDescending(propertyOrFieldName).ToPagedList(pageIndex, pageSize);
+        }
+
+        public static DbPagination<TSource> ToDescendingPagedList<TSource, TKey>(
+           this IQueryable<TSource> source,
+           Expression<Func<TSource, TKey>> keySelector,
+           int pageIndex = 1,
+           int pageSize = 10) where TSource : class
+        {
+            return source.OrderByDescending(keySelector).ToPagedList(pageIndex, pageSize);
+        }
+
+        public static DbPagination<TSource> ToDescendingPagedList<TSource>(
            this IQueryable<TSource> source,
            Expression<Func<TSource, bool>> predicate,
            string propertyOrFieldName,
@@ -242,11 +290,25 @@ namespace Microsoft.EntityFrameworkCore
             return source.Where(predicate).OrderByDescending(propertyOrFieldName).ToPagedList(pageIndex, pageSize);
         }
 
-        public static async Task<DbPagination<TSource>> ToPagedListAsync<TSource>(
+        public static DbPagination<TSource> ToDescendingPagedList<TSource, TKey>(
            this IQueryable<TSource> source,
+           Expression<Func<TSource, bool>> predicate,
+           Expression<Func<TSource, TKey>> keySelector,
            int pageIndex = 1,
-           int pageSize = 10,
-           CancellationToken cancellationToken = default) where TSource : class
+           int pageSize = 10) where TSource : class
+        {
+            return source.Where(predicate).OrderByDescending(keySelector).ToPagedList(pageIndex, pageSize);
+        }
+
+        #endregion
+
+        #region ToPagedListAsync
+
+        public static async Task<DbPagination<TSource>> ToPagedListAsync<TSource>(
+            this IQueryable<TSource> source,
+            int pageIndex = 1,
+            int pageSize = 10,
+            CancellationToken cancellationToken = default) where TSource : class
         {
             var dbPagination = new DbPagination<TSource>(pageIndex, pageSize)
             {
@@ -269,18 +331,27 @@ namespace Microsoft.EntityFrameworkCore
             return await source.Where(predicate).ToPagedListAsync(pageIndex, pageSize, cancellationToken);
         }
 
-        public static async Task<DbPagination<TSource>> ToOrderPagedListAsync<TSource, TKey>(
+        public static async Task<DbPagination<TSource>> ToPagedListAsync<TSource>(
            this IQueryable<TSource> source,
-           Expression<Func<TSource, bool>> predicate,
+           string propertyOrFieldName,
+           int pageIndex = 1,
+           int pageSize = 10,
+           CancellationToken cancellationToken = default) where TSource : class
+        {
+            return await source.OrderBy(propertyOrFieldName).ToPagedListAsync(pageIndex, pageSize, cancellationToken);
+        }
+
+        public static async Task<DbPagination<TSource>> ToPagedListAsync<TSource, TKey>(
+           this IQueryable<TSource> source,
            Expression<Func<TSource, TKey>> keySelector,
            int pageIndex = 1,
            int pageSize = 10,
            CancellationToken cancellationToken = default) where TSource : class
         {
-            return await source.Where(predicate).OrderBy(keySelector).ToPagedListAsync(pageIndex, pageSize, cancellationToken);
+            return await source.OrderBy(keySelector).ToPagedListAsync(pageIndex, pageSize, cancellationToken);
         }
 
-        public static async Task<DbPagination<TSource>> ToOrderPagedListAsync<TSource, TKey>(
+        public static async Task<DbPagination<TSource>> ToPagedListAsync<TSource>(
            this IQueryable<TSource> source,
            Expression<Func<TSource, bool>> predicate,
            string propertyOrFieldName,
@@ -291,7 +362,53 @@ namespace Microsoft.EntityFrameworkCore
             return await source.Where(predicate).OrderBy(propertyOrFieldName).ToPagedListAsync(pageIndex, pageSize, cancellationToken);
         }
 
-        public static async Task<DbPagination<TSource>> ToOrderDescendingPagedListAsync<TSource, TKey>(
+        public static async Task<DbPagination<TSource>> ToPagedListAsync<TSource, TKey>(
+           this IQueryable<TSource> source,
+           Expression<Func<TSource, bool>> predicate,
+           Expression<Func<TSource, TKey>> keySelector,
+           int pageIndex = 1,
+           int pageSize = 10,
+           CancellationToken cancellationToken = default) where TSource : class
+        {
+            return await source.Where(predicate).OrderBy(keySelector).ToPagedListAsync(pageIndex, pageSize, cancellationToken);
+        }
+
+        #endregion
+
+        #region ToDescendingPagedListAsync
+
+        public static async Task<DbPagination<TSource>> ToDescendingPagedListAsync<TSource>(
+           this IQueryable<TSource> source,
+           string propertyOrFieldName,
+           int pageIndex = 1,
+           int pageSize = 10,
+           CancellationToken cancellationToken = default) where TSource : class
+        {
+            return await source.OrderByDescending(propertyOrFieldName).ToPagedListAsync(pageIndex, pageSize, cancellationToken);
+        }
+
+        public static async Task<DbPagination<TSource>> ToDescendingPagedListAsync<TSource, TKey>(
+           this IQueryable<TSource> source,
+           Expression<Func<TSource, TKey>> keySelector,
+           int pageIndex = 1,
+           int pageSize = 10,
+           CancellationToken cancellationToken = default) where TSource : class
+        {
+            return await source.OrderByDescending(keySelector).ToPagedListAsync(pageIndex, pageSize, cancellationToken);
+        }
+
+        public static async Task<DbPagination<TSource>> ToDescendingPagedListAsync<TSource>(
+           this IQueryable<TSource> source,
+           Expression<Func<TSource, bool>> predicate,
+           string propertyOrFieldName,
+           int pageIndex = 1,
+           int pageSize = 10,
+           CancellationToken cancellationToken = default) where TSource : class
+        {
+            return await source.Where(predicate).OrderByDescending(propertyOrFieldName).ToPagedListAsync(pageIndex, pageSize, cancellationToken);
+        }
+
+        public static async Task<DbPagination<TSource>> ToDescendingPagedListAsync<TSource, TKey>(
            this IQueryable<TSource> source,
            Expression<Func<TSource, bool>> predicate,
            Expression<Func<TSource, TKey>> keySelector,
@@ -302,15 +419,6 @@ namespace Microsoft.EntityFrameworkCore
             return await source.Where(predicate).OrderByDescending(keySelector).ToPagedListAsync(pageIndex, pageSize, cancellationToken);
         }
 
-        public static async Task<DbPagination<TSource>> ToOrderDescendingPagedListAsync<TSource, TKey>(
-           this IQueryable<TSource> source,
-           Expression<Func<TSource, bool>> predicate,
-           string propertyOrFieldName,
-           int pageIndex = 1,
-           int pageSize = 10,
-           CancellationToken cancellationToken = default) where TSource : class
-        {
-            return await source.Where(predicate).OrderByDescending(propertyOrFieldName).ToPagedListAsync(pageIndex, pageSize, cancellationToken);
-        }
+        #endregion
     }
 }

@@ -15,6 +15,7 @@ public static class HttpJsonServiceServiceCollectionExtensions
             configureOptions.SerializerOptions.AllowTrailingCommas = true;
             configureOptions.SerializerOptions.PropertyNameCaseInsensitive = true;
             configureOptions.SerializerOptions.ReadCommentHandling = JsonCommentHandling.Skip;
+            configureOptions.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
             configureOptions.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
             configureOptions.SerializerOptions.Encoder = JavaScriptEncoder.Create(UnicodeRanges.All);
 

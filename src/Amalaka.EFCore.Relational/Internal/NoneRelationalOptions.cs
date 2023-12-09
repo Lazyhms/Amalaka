@@ -27,7 +27,6 @@ public class NoneRelationalOptions : INoneRelationalOptions
         var optionsExtension = (NoneRelationalOptionsExtension?)options.Extensions.FirstOrDefault(f => f is NoneRelationalOptionsExtension) ?? new NoneRelationalOptionsExtension();
         if (!Equals(NoneForeignKey, optionsExtension!.NoneForeignKey))
         {
-
         }
     }
 }
