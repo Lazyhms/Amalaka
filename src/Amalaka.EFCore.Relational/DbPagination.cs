@@ -8,5 +8,5 @@ public class DbPagination<TSource>(int pageIndex, int pageSize)
 
     public int TotalCount { get; set; }
 
-    public List<TSource> PageData { get; set; } = [];
+    public IEnumerable<TSource> PageData { get; set; } = [];
 }

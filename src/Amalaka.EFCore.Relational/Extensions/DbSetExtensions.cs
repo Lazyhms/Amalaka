@@ -1,30 +1,32 @@
 ﻿using Amalaka.EntityFrameworkCore.Infrastructure.Internal;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using System.Collections.Concurrent;
+using System.Linq.Expressions;
 
 namespace Microsoft.EntityFrameworkCore;
 
 public static class DbSetExtensions
 {
-    public static EntityEntry<TSource> Remove<TSource>(this DbSet<TSource> source, string primaryKeyValue) where TSource : class, new()
-        => source.Entry(new TSource()).Remove((entityEntry, properties) => entityEntry.Property(properties[0]).CurrentValue = primaryKeyValue);
+    public static EntityEntry<TSource> Remove<TSource>(this DbSet<TSource> source, string primaryKeyValue) where TSource : class
+        => source.EntityEntry().Remove((entityEntry, properties) => entityEntry.Property(properties[0]).CurrentValue = primaryKeyValue);
 
-    public static EntityEntry<TSource> Remove<TSource, TKey>(this DbSet<TSource> source, TKey primaryKeyValue) where TSource : class, new() where TKey : struct
-        => source.Entry(new TSource()).Remove((entityEntry, properties) => entityEntry.Property(properties[0]).CurrentValue = primaryKeyValue);
+    public static EntityEntry<TSource> Remove<TSource, TKey>(this DbSet<TSource> source, TKey primaryKeyValue) where TSource : class where TKey : struct
+        => source.EntityEntry().Remove((entityEntry, properties) => entityEntry.Property(properties[0]).CurrentValue = primaryKeyValue);
 
-    public static EntityEntry<TSource> Remove<TSource>(this DbSet<TSource> source, object objectInstance) where TSource : class, new()
-        => source.Entry(new TSource()).Remove((entityEntry, properties) => entityEntry.CurrentValues.SetValues(objectInstance));
+    public static EntityEntry<TSource> Remove<TSource>(this DbSet<TSource> source, object objectInstance) where TSource : class
+        => source.EntityEntry().Remove((entityEntry, properties) => entityEntry.CurrentValues.SetValues(objectInstance));
 
-    public static void RemoveRange<TSource>(this DbSet<TSource> source, params string[] primaryKeyValues) where TSource : class, new()
+    public static void RemoveRange<TSource>(this DbSet<TSource> source, params string[] primaryKeyValues) where TSource : class
         => source.RemoveRange((IEnumerable<string>)primaryKeyValues);
 
-    public static void RemoveRange<TSource, TKey>(this DbSet<TSource> source, params TKey[] primaryKeyValues) where TSource : class, new() where TKey : struct
+    public static void RemoveRange<TSource, TKey>(this DbSet<TSource> source, params TKey[] primaryKeyValues) where TSource : class where TKey : struct
         => source.RemoveRange((IEnumerable<TKey>)primaryKeyValues);
 
-    public static void RemoveRange<TSource>(this DbSet<TSource> source, params object[] objectInstances) where TSource : class, new()
+    public static void RemoveRange<TSource>(this DbSet<TSource> source, params object[] objectInstances) where TSource : class
         => source.RemoveRange((IEnumerable<object>)objectInstances);
 
-    public static void RemoveRange<TSource>(this DbSet<TSource> source, IEnumerable<string> primaryKeyValues) where TSource : class, new()
+    public static void RemoveRange<TSource>(this DbSet<TSource> source, IEnumerable<string> primaryKeyValues) where TSource : class
     {
         foreach (var primaryKeyValue in primaryKeyValues)
         {
@@ -32,7 +34,7 @@ public static class DbSetExtensions
         }
     }
 
-    public static void RemoveRange<TSource, TKey>(this DbSet<TSource> source, IEnumerable<TKey> primaryKeyValues) where TSource : class, new() where TKey : struct
+    public static void RemoveRange<TSource, TKey>(this DbSet<TSource> source, IEnumerable<TKey> primaryKeyValues) where TSource : class where TKey : struct
     {
         foreach (var primaryKeyValue in primaryKeyValues)
         {
@@ -40,7 +42,7 @@ public static class DbSetExtensions
         }
     }
 
-    public static void RemoveRange<TSource>(this DbSet<TSource> source, IEnumerable<object> objectInstances) where TSource : class, new()
+    public static void RemoveRange<TSource>(this DbSet<TSource> source, IEnumerable<object> objectInstances) where TSource : class
     {
         foreach (var objectInstance in objectInstances)
         {
@@ -48,31 +50,31 @@ public static class DbSetExtensions
         }
     }
 
-    public static EntityEntry<TSource> SoftRemove<TSource>(this DbSet<TSource> source, string primaryKeyValue) where TSource : class, new()
-        => source.Entry(new TSource()).SoftRemove((entityEntry, properties) => entityEntry.Property(properties[0]).CurrentValue = primaryKeyValue);
+    public static EntityEntry<TSource> SoftRemove<TSource>(this DbSet<TSource> source, string primaryKeyValue) where TSource : class
+        => source.EntityEntry().SoftRemove((entityEntry, properties) => entityEntry.Property(properties[0]).CurrentValue = primaryKeyValue);
 
-    public static EntityEntry<TSource> SoftRemove<TSource, TKey>(this DbSet<TSource> source, TKey primaryKeyValue) where TSource : class, new() where TKey : struct
-        => source.Entry(new TSource()).SoftRemove((entityEntry, properties) => entityEntry.Property(properties[0]).CurrentValue = primaryKeyValue);
+    public static EntityEntry<TSource> SoftRemove<TSource, TKey>(this DbSet<TSource> source, TKey primaryKeyValue) where TSource : class where TKey : struct
+        => source.EntityEntry().SoftRemove((entityEntry, properties) => entityEntry.Property(properties[0]).CurrentValue = primaryKeyValue);
 
-    public static EntityEntry<TSource> SoftRemove<TSource>(this DbSet<TSource> source, object objectInstance) where TSource : class, new()
-        => source.Entry(new TSource()).SoftRemove((entityEntry, properties) => entityEntry.Property(properties[0]).CurrentValue = objectInstance);
+    public static EntityEntry<TSource> SoftRemove<TSource>(this DbSet<TSource> source, object objectInstance) where TSource : class
+        => source.EntityEntry().SoftRemove((entityEntry, properties) => entityEntry.Property(properties[0]).CurrentValue = objectInstance);
 
-    public static EntityEntry<TSource> SoftRemove<TSource>(this DbSet<TSource> source, TSource objectInstance) where TSource : class, new()
+    public static EntityEntry<TSource> SoftRemove<TSource>(this DbSet<TSource> source, TSource objectInstance) where TSource : class
         => source.Entry(objectInstance).SoftRemove();
 
-    public static void SoftRemoveRange<TSource>(this DbSet<TSource> source, params string[] primaryKeyValues) where TSource : class, new()
+    public static void SoftRemoveRange<TSource>(this DbSet<TSource> source, params string[] primaryKeyValues) where TSource : class
         => source.SoftRemoveRange((IEnumerable<string>)primaryKeyValues);
 
-    public static void SoftRemoveRange<TSource, TKey>(this DbSet<TSource> source, params TKey[] primaryKeyValues) where TSource : class, new() where TKey : struct
+    public static void SoftRemoveRange<TSource, TKey>(this DbSet<TSource> source, params TKey[] primaryKeyValues) where TSource : class where TKey : struct
         => source.SoftRemoveRange((IEnumerable<TKey>)primaryKeyValues);
 
-    public static void SoftRemoveRange<TSource>(this DbSet<TSource> source, params object[] objectInstances) where TSource : class, new()
+    public static void SoftRemoveRange<TSource>(this DbSet<TSource> source, params object[] objectInstances) where TSource : class
         => source.SoftRemoveRange((IEnumerable<object>)objectInstances);
 
-    public static void SoftRemoveRange<TSource>(this DbSet<TSource> source, params TSource[] objectInstances) where TSource : class, new()
+    public static void SoftRemoveRange<TSource>(this DbSet<TSource> source, params TSource[] objectInstances) where TSource : class
         => source.SoftRemoveRange((IEnumerable<TSource>)objectInstances);
 
-    public static void SoftRemoveRange<TSource>(this DbSet<TSource> source, IEnumerable<string> primaryKeyValues) where TSource : class, new()
+    public static void SoftRemoveRange<TSource>(this DbSet<TSource> source, IEnumerable<string> primaryKeyValues) where TSource : class
     {
         foreach (var primaryKeyValue in primaryKeyValues)
         {
@@ -80,7 +82,7 @@ public static class DbSetExtensions
         }
     }
 
-    public static void SoftRemoveRange<TSource, TKey>(this DbSet<TSource> source, IEnumerable<TKey> primaryKeyValues) where TSource : class, new() where TKey : struct
+    public static void SoftRemoveRange<TSource, TKey>(this DbSet<TSource> source, IEnumerable<TKey> primaryKeyValues) where TSource : class where TKey : struct
     {
         foreach (var primaryKeyValue in primaryKeyValues)
         {
@@ -88,7 +90,7 @@ public static class DbSetExtensions
         }
     }
 
-    public static void SoftRemoveRange<TSource>(this DbSet<TSource> source, IEnumerable<object> objectInstances) where TSource : class, new()
+    public static void SoftRemoveRange<TSource>(this DbSet<TSource> source, IEnumerable<object> objectInstances) where TSource : class
     {
         foreach (var objectInstance in objectInstances)
         {
@@ -96,7 +98,7 @@ public static class DbSetExtensions
         }
     }
 
-    public static void SoftRemoveRange<TSource>(this DbSet<TSource> source, IEnumerable<TSource> objectInstances) where TSource : class, new()
+    public static void SoftRemoveRange<TSource>(this DbSet<TSource> source, IEnumerable<TSource> objectInstances) where TSource : class
     {
         foreach (var objectInstance in objectInstances)
         {
@@ -104,7 +106,10 @@ public static class DbSetExtensions
         }
     }
 
-    private static EntityEntry<TSource> Remove<TSource>(this EntityEntry<TSource> entityEntry, Action<EntityEntry<TSource>, IReadOnlyList<IProperty>>? removeAction = null) where TSource : class, new()
+    private static EntityEntry<TSource> EntityEntry<TSource>(this DbSet<TSource> source) where TSource : class
+        => source.Entry(Expression.Lambda<Func<TSource>>(Expression.New(typeof(TSource))).Compile().Invoke());
+
+    private static EntityEntry<TSource> Remove<TSource>(this EntityEntry<TSource> entityEntry, Action<EntityEntry<TSource>, IReadOnlyList<IProperty>>? removeAction = null) where TSource : class
     {
         if (removeAction != null)
         {
@@ -119,7 +124,7 @@ public static class DbSetExtensions
         return entityEntry;
     }
 
-    private static EntityEntry<TSource> SoftRemove<TSource>(this EntityEntry<TSource> entityEntry, Action<EntityEntry<TSource>, IReadOnlyList<IProperty>>? softDeleteAction = null) where TSource : class, new()
+    private static EntityEntry<TSource> SoftRemove<TSource>(this EntityEntry<TSource> entityEntry, Action<EntityEntry<TSource>, IReadOnlyList<IProperty>>? softDeleteAction = null) where TSource : class
     {
         if (softDeleteAction != null)
         {

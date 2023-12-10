@@ -5,7 +5,9 @@ using Pomelo.EntityFrameworkCore.MySql.Migrations;
 
 namespace Microsoft.EntityFrameworkCore.Migrations;
 
-public class NoneRelationalMySqlMigrationsSqlGenerator(MigrationsSqlGeneratorDependencies dependencies, ICommandBatchPreparer commandBatchPreparer, IMySqlOptions options) 
+#pragma warning disable EF1001 // Internal EF Core API usage.
+public class NoneRelationalMySqlMigrationsSqlGenerator(MigrationsSqlGeneratorDependencies dependencies, ICommandBatchPreparer commandBatchPreparer, IMySqlOptions options)
+#pragma warning restore EF1001 // Internal EF Core API usage.
     : MySqlMigrationsSqlGenerator(dependencies, commandBatchPreparer, options)
 {
     protected override void CreateTableForeignKeys(CreateTableOperation operation, IModel? model, MigrationCommandListBuilder builder)
