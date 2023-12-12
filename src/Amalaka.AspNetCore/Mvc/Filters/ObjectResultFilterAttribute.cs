@@ -7,12 +7,12 @@ public sealed class ObjectResultFilterAttribute() : ResultFilterAttribute
     {
         if (context.Result is ObjectResult okObjectResult)
         {
-            okObjectResult.Value = new
+            context.Result = new OkObjectResult(new
             {
                 Success = true,
                 Message = "",
                 Data = okObjectResult.Value
-            };
+            });
         }
         return base.OnResultExecutionAsync(context, next);
     }
