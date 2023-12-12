@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.DependencyInjection.Internal;
 
 namespace Microsoft.Extensions.DependencyInjection;
 

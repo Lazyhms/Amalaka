@@ -6,7 +6,10 @@ public static class ExceptionHandlerServiceCollectionExtensions
 {
     public static IServiceCollection AddExceptionHandler(this IServiceCollection services)
     {
+        services.AddExceptionHandler<GlobalExceptionHandler>();
+        services.AddExceptionHandler<BusinessExceptionHandler>();
         services.AddExceptionHandler<ArgumentExceptionHandler>();
+        services.AddExceptionHandler<ArgumentNullExceptionHandler>();
 
         return services;
     }

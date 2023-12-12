@@ -5,12 +5,12 @@ using Microsoft.Extensions.Logging;
 
 namespace Microsoft.AspNetCore.Diagnostics;
 
-public sealed class ArgumentExceptionHandler(ILogger<ArgumentExceptionHandler> logger, IWebHostEnvironment webHostEnvironment)
-    : ExceptionHandler<ArgumentExceptionHandler, ArgumentException>(logger, webHostEnvironment)
+public sealed class ArgumentNullExceptionHandler(ILogger<ArgumentNullExceptionHandler> logger, IWebHostEnvironment webHostEnvironment)
+    : ExceptionHandler<ArgumentNullExceptionHandler, ArgumentNullException>(logger, webHostEnvironment)
 {
     public override ProblemDetails ProblemDetails { get; set; } = new()
     {
-        Title = "参数异常",
+        Title = "参数空异常",
         Status = StatusCodes.Status202Accepted,
     };
 }
