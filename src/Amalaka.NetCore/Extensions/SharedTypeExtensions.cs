@@ -82,6 +82,15 @@ public static class SharedTypeExtensions
             || type == typeof(double);
     }
 
+    public static bool IsDateTime(this Type type)
+    {
+        type = type.UnwrapNullableType();
+
+        return type == typeof(DateTime) 
+            || type == typeof(DateOnly) 
+            || type == typeof(TimeOnly);
+    }
+
     public static bool IsInteger(this Type type)
     {
         type = type.UnwrapNullableType();

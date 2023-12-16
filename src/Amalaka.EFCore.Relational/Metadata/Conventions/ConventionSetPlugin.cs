@@ -2,7 +2,7 @@
 
 namespace Amalaka.EntityFrameworkCore.Metadata.Conventions;
 
-public class NoneRelationalConventionSetPlugin(
+public class ConventionSetPlugin(
     INoneRelationalOptions noneRelationalOptions,
     ProviderConventionSetBuilderDependencies dependencies) : IConventionSetPlugin
 {
