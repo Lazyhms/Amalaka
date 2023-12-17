@@ -29,9 +29,8 @@ public static class EnumerableExtensions
     public static bool IsNullOrEmpty<T>(this IEnumerable<T> values) => values switch
     {
         null => true,
-        List<T> list => list.Count == 0,
-        T[] array => array.Length == 0,
-        _ => values.Any(),
+        ICollection<T> list => list.Count == 0,
+        _ => !values.Any(),
     };
 
     public static bool IsNotNullOrEmpty<T>(this IEnumerable<T> values)

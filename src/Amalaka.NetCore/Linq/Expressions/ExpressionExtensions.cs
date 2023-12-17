@@ -1,6 +1,4 @@
-﻿using System.Collections.ObjectModel;
-
-namespace System.Linq.Expressions;
+﻿namespace System.Linq.Expressions;
 
 public static class ExpressionExtensions
 {
@@ -23,17 +21,14 @@ public static class ExpressionExtensions
         Expression<T> second,
         Func<Expression, Expression, Expression> merge) where T : class
     {
-        var visitor = new ParameterVisitor(first.Parameters);
+        var visitor = new ParameterVisitor<T>();
         var expression = merge(visitor.Visit(first.Body)!, visitor.Visit(second.Body)!);
         return Expression.Lambda<T>(expression, first.Parameters);
     }
 
-    private sealed class ParameterVisitor(ReadOnlyCollection<ParameterExpression> parameters) : ExpressionVisitor
+    private sealed class ParameterVisitor<T>() : ExpressionVisitor
     {
-        public override Expression? Visit(Expression? node)
-            => base.Visit(node);
-
         protected override Expression VisitParameter(ParameterExpression parameter)
-            => parameters.FirstOrDefault(s => s.Type == parameter.Type) ?? parameter;
+            => Expression.Parameter(typeof(T), "filter");
     }
 }

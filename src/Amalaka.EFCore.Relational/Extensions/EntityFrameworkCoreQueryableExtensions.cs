@@ -48,6 +48,25 @@ namespace Microsoft.EntityFrameworkCore
             CancellationToken cancellationToken = default)
             => condition ? source.FirstOrDefaultAsync(predicate, cancellationToken) : source.FirstOrDefaultAsync(cancellationToken);
 
+        public static readonly MethodInfo IgnoreQueryFilterMethodInfo
+            = typeof(EntityFrameworkCoreQueryableExtensions)
+                .GetTypeInfo().GetDeclaredMethods(nameof(IgnoreQueryFilter))
+                .Single(mi => mi.GetParameters().Any(
+                    pi => pi.Name == "filter" && pi.ParameterType == typeof(string[])))!;
+
+        public static IQueryable<TEntity> IgnoreQueryFilter<TEntity>(this IQueryable<TEntity> source, [NotParameterized] params string[] filter) where TEntity : class
+        {
+            return
+                source.Provider is EntityQueryProvider
+                    ? source.Provider.CreateQuery<TEntity>(
+                        Expression.Call(
+                            instance: null,
+                            method: IgnoreQueryFilterMethodInfo.MakeGenericMethod(typeof(TEntity)),
+                            arg0: source.Expression,
+                            arg1: Expression.Constant(filter)))
+                    : source;
+        }
+
         #region OrderBy
 
         public static IOrderedQueryable<TSource> OrderBy<TSource>(

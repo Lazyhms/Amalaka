@@ -1,7 +1,7 @@
 ﻿using Amalaka.EntityFrameworkCore.Infrastructure;
 using Amalaka.EntityFrameworkCore.Infrastructure.Internal;
 
-namespace Amalaka.EntityFrameworkCore.Internal;
+namespace Microsoft.EntityFrameworkCore.Infrastructure.Internal;
 
 public class NoneRelationalOptions : INoneRelationalOptions
 {
