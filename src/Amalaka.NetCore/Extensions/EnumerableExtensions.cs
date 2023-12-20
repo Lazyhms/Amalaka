@@ -35,4 +35,18 @@ public static class EnumerableExtensions
 
     public static bool IsNotNullOrEmpty<T>(this IEnumerable<T> values)
         => !values.IsNullOrEmpty();
+
+    public static IEnumerable<TResult> LeftJoin<TOuter, TInner, TKey, TResult>(
+        this IEnumerable<TOuter> outer,
+        IEnumerable<TInner> inner,
+        Func<TOuter, TKey> outerKeySelector,
+        Func<TInner, TKey> innerKeySelector,
+        Func<TOuter, TInner?, TResult> resultSelector)
+    {
+        return outer.GroupJoin(inner, outerKeySelector, innerKeySelector, (outer, inner) => new
+        {
+            outer,
+            inner
+        }).SelectMany(sm => sm.inner.DefaultIfEmpty(), (r1, r2) => resultSelector(r1.outer, r2));
+    }
 }

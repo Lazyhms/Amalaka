@@ -5,17 +5,17 @@ namespace System
 {
     public static class EnumExtensions
     {
-        public static T? GetAttributeOfType<T>(this Enum value) where T : Attribute
+        public static TAttribute? GetAttributeOfType<TAttribute>(this Enum value) where TAttribute : Attribute
         {
             var fieldInfo = value.GetType().GetField(value.ToString());
-            if (fieldInfo is not null && fieldInfo.IsDefined(typeof(T)))
+            if (fieldInfo is not null && fieldInfo.IsDefined(typeof(TAttribute)))
             {
-                return fieldInfo.GetCustomAttribute<T>();
+                return fieldInfo.GetCustomAttribute<TAttribute>();
             }
             return null;
         }
 
-        public static string GetDescription(this Enum value)
+        public static string GetDescription<T>(this T value) where T : Enum
             => value.GetAttributeOfType<DescriptionAttribute>()?.Description ?? string.Empty;
     }
 }

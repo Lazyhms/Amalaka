@@ -1,6 +1,7 @@
 ﻿using System.Linq.Expressions;
+using Amalaka.NetCore.Extensions;
 
-namespace System.Linq;
+namespace Amalaka.NetCore.Extensions;
 
 public static class QueryableExtensions
 {
@@ -31,6 +32,6 @@ public static class QueryableExtensions
         {
             outer,
             inners
-        }).SelectMany(collectionSelector => collectionSelector.inners.DefaultIfEmpty(), (r, s) => resultSelector(r.outer, s));
+        }).SelectMany(collectionSelector => collectionSelector.inners.DefaultIfEmpty(), (r1, r2) => resultSelector(r1.outer, r2));
     }
 }
