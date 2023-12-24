@@ -9,7 +9,7 @@ public static class ModelBuilderExtensions
     {
         foreach (var type in assembly.GetTypes().Where(w => w.IsDefined(typeof(DbEntityAttribute))))
         {
-            if (type.BaseType == typeof(object))
+            if (!type.IsClass || type.BaseType == typeof(object))
             {
                 continue;
             }
