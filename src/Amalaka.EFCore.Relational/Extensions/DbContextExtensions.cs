@@ -6,11 +6,14 @@ namespace Microsoft.EntityFrameworkCore;
 public static class DbContextExtensions
 {
     public static EntityEntry SoftRemove(this DbContext context, object objectInstance)
+        => context.SoftRemove<object>(objectInstance);
+
+    public static EntityEntry<TSource> SoftRemove<TSource>(this DbContext context, TSource objectInstance) where TSource : class
     {
         var entityEntry = context.Entry(objectInstance);
         entityEntry.State = EntityState.Unchanged;
 
-        var softDeleteOptions = entityEntry.Context.GetService<INoneRelationalOptions>().SoftDelete;
+        var softDeleteOptions = entityEntry.Context.GetService<INoneRelationalOptions>().SoftDeleteOptions;
         if (softDeleteOptions.Enabled && !entityEntry.Metadata.ClrType.IsDefined(typeof(HardDeleteAttribute)))
         {
             entityEntry.Property(softDeleteOptions.ColumnName).CurrentValue = true;
@@ -19,26 +22,6 @@ public static class DbContextExtensions
         else if (!softDeleteOptions.Enabled && entityEntry.Metadata.ClrType.IsDefined(typeof(SoftDeleteAttribute)))
         {
             var softDeleteAttribute = entityEntry.Metadata.ClrType.GetCustomAttribute<SoftDeleteAttribute>();
-            entityEntry.Property(softDeleteAttribute!.ColumnName).CurrentValue = true;
-            entityEntry.Property(softDeleteAttribute!.ColumnName).IsModified = true;
-        }
-        return entityEntry;
-    }
-
-    public static EntityEntry<TSource> SoftRemove<TSource>(this DbContext context, TSource objectInstance) where TSource : class
-    {
-        var entityEntry = context.Entry(objectInstance);
-        entityEntry.State = EntityState.Unchanged;
-
-        var softDeleteOptions = entityEntry.Context.GetService<INoneRelationalOptions>().SoftDelete;
-        if (softDeleteOptions.Enabled && !typeof(TSource).IsDefined(typeof(HardDeleteAttribute)))
-        {
-            entityEntry.Property(softDeleteOptions.ColumnName).CurrentValue = true;
-            entityEntry.Property(softDeleteOptions.ColumnName).IsModified = true;
-        }
-        else if (!softDeleteOptions.Enabled && typeof(TSource).IsDefined(typeof(SoftDeleteAttribute)))
-        {
-            var softDeleteAttribute = typeof(TSource).GetCustomAttribute<SoftDeleteAttribute>();
             entityEntry.Property(softDeleteAttribute!.ColumnName).CurrentValue = true;
             entityEntry.Property(softDeleteAttribute!.ColumnName).IsModified = true;
         }

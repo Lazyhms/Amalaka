@@ -1,7 +1,6 @@
 ﻿using Amalaka.EntityFrameworkCore.Infrastructure.Internal;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using System.Collections.Concurrent;
 using System.Linq.Expressions;
 
 namespace Microsoft.EntityFrameworkCore;
@@ -137,15 +136,15 @@ public static class DbSetExtensions
         }
         entityEntry.State = EntityState.Unchanged;
 
-        var softDeleteOptions = entityEntry.Context.GetService<INoneRelationalOptions>().SoftDelete;
-        if (softDeleteOptions.Enabled && !typeof(TSource).IsDefined(typeof(HardDeleteAttribute)))
+        var softDeleteOptions = entityEntry.Context.GetService<INoneRelationalOptions>().SoftDeleteOptions;
+        if (softDeleteOptions.Enabled && !entityEntry.Metadata.ClrType.IsDefined(typeof(HardDeleteAttribute)))
         {
             entityEntry.Property(softDeleteOptions.ColumnName).CurrentValue = true;
             entityEntry.Property(softDeleteOptions.ColumnName).IsModified = true;
         }
-        else if (!softDeleteOptions.Enabled && typeof(TSource).IsDefined(typeof(SoftDeleteAttribute)))
+        else if (!softDeleteOptions.Enabled && entityEntry.Metadata.ClrType.IsDefined(typeof(SoftDeleteAttribute)))
         {
-            var softDeleteAttribute = typeof(TSource).GetCustomAttribute<SoftDeleteAttribute>();
+            var softDeleteAttribute = entityEntry.Metadata.ClrType.GetCustomAttribute<SoftDeleteAttribute>();
             entityEntry.Property(softDeleteAttribute!.ColumnName).CurrentValue = true;
             entityEntry.Property(softDeleteAttribute!.ColumnName).IsModified = true;
         }

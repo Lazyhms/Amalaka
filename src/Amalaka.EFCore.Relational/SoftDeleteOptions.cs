@@ -6,9 +6,9 @@ public class SoftDeleteOptions(string? columnName, string? comment = null)
     {
     }
 
-    public bool Enabled { get; set; } = false;
+    public bool Enabled { get; init; } = false;
 
-    public string ColumnName { get; init; } = string.IsNullOrWhiteSpace(columnName) ? "IsDeleted" : columnName;
+    public string ColumnName { get; init; } = string.IsNullOrWhiteSpace(columnName) ? "Deleted" : columnName;
 
-    public string? Comment { get; set; } = comment;
+    public string? Comment { get; init; } = comment;
 }

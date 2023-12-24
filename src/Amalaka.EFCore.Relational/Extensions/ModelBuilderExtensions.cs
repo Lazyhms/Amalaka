@@ -7,20 +7,18 @@ public static class ModelBuilderExtensions
 
     public static ModelBuilder ApplyEntityFromAssembly(this ModelBuilder builder, Assembly assembly)
     {
-        foreach (var type in assembly.GetTypes().Where(w => w.IsDefined(typeof(DbEntityAttribute))))
+        return builder.ApplyEntityFromAssembly(assembly, w => w.IsDefined(typeof(DbEntityAttribute)));
+    }
+
+    public static ModelBuilder ApplyEntityFromAssembly(this ModelBuilder builder, Assembly assembly, Func<Type, bool> predicate)
+    {
+        foreach (var type in assembly.GetTypes().Where(predicate.Invoke))
         {
             if (!type.IsClass || type.BaseType == typeof(object))
             {
                 continue;
             }
-            var entityTypeBuilder = builder.Entity(type);
-            if (type.IsDefined(typeof(SoftDeleteAttribute)))
-            {
-                var softDeleteAttribute = type.GetCustomAttribute<SoftDeleteAttribute>();
-                entityTypeBuilder.Property(softDeleteAttribute!.ColumnName)
-                                 .HasComment(softDeleteAttribute.Comment)
-                                 .HasDefaultValue(false);
-            }
+            builder.Entity(type);
         }
         return builder;
     }

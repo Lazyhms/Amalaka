@@ -3,11 +3,13 @@
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 public sealed class SoftDeleteAttribute(string columnName, string? comment = null) : Attribute
 {
-    public SoftDeleteAttribute() : this("IsDeleted", null)
+    public SoftDeleteAttribute() : this("Deleted", null)
     {
     }
 
     public string ColumnName { get; init; } = columnName;
 
-    public string? Comment { get; set; } = comment;
+    public string? Comment { get; init; } = comment;
+
+    public int Order { get; init; } = 100;
 }

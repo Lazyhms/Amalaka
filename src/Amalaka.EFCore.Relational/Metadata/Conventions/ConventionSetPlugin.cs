@@ -33,7 +33,7 @@ public class ConventionSetPlugin(
             conventionSet.Remove(typeof(ForeignKeyIndexConvention));
         }
 
-        var tableSoftDeleteConvention = new TableSoftDeleteConvention(NoneRelationalOptions.SoftDelete);
+        var tableSoftDeleteConvention = new TableSoftDeleteConvention(NoneRelationalOptions.SoftDeleteOptions);
         conventionSet.EntityTypeAddedConventions.Add(tableSoftDeleteConvention);
         conventionSet.ModelFinalizingConventions.Add(tableSoftDeleteConvention);
 

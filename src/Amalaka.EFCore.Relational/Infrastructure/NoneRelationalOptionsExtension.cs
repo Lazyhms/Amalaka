@@ -10,13 +10,13 @@ public class NoneRelationalOptionsExtension : IDbContextOptionsExtension
     public NoneRelationalOptionsExtension()
     {
         NoneForeignKey = false;
-        SoftDelete = new SoftDeleteOptions();
+        SoftDeleteOptions = new SoftDeleteOptions();
     }
 
     protected NoneRelationalOptionsExtension(NoneRelationalOptionsExtension copyFrom)
     {
         NoneForeignKey = copyFrom.NoneForeignKey;
-        SoftDelete = copyFrom.SoftDelete;
+        SoftDeleteOptions = copyFrom.SoftDeleteOptions;
     }
 
     public virtual DbContextOptionsExtensionInfo Info
@@ -29,7 +29,7 @@ public class NoneRelationalOptionsExtension : IDbContextOptionsExtension
 
     public bool NoneForeignKey { get; private set; }
 
-    public SoftDeleteOptions SoftDelete { get; private set; }
+    public SoftDeleteOptions SoftDeleteOptions { get; private set; }
 
     public NoneRelationalOptionsExtension WithNoneForeignKey()
     {
@@ -41,7 +41,7 @@ public class NoneRelationalOptionsExtension : IDbContextOptionsExtension
     public NoneRelationalOptionsExtension UseSoftDelete(string? columnName, string? comment)
     {
         var clone = Clone();
-        clone.SoftDelete = new SoftDeleteOptions(columnName, comment) { Enabled = true };
+        clone.SoftDeleteOptions = new SoftDeleteOptions(columnName, comment) { Enabled = true };
         return clone;
     }
 

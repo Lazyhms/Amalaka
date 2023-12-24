@@ -16,12 +16,12 @@ public sealed class TableSoftDeleteConvention(SoftDeleteOptions softDeleteOption
 
         if (softDeleteOptions.Enabled && !clrType.IsDefined(typeof(HardDeleteAttribute)))
         {
-            entityTypeBuilder.Property(typeof(bool), softDeleteOptions.ColumnName)!.HasComment(softDeleteOptions.Comment)!.HasDefaultValue(false);
+            entityTypeBuilder.Property(typeof(bool), softDeleteOptions.ColumnName)?.HasComment(softDeleteOptions.Comment)?.HasDefaultValue(false)?.HasColumnOrder(100);
         }
         else if (!softDeleteOptions.Enabled && clrType.IsDefined(typeof(SoftDeleteAttribute)))
         {
             var softDeleteAttribute = clrType.GetCustomAttribute<SoftDeleteAttribute>();
-            entityTypeBuilder.Property(typeof(bool), softDeleteAttribute!.ColumnName)!.HasComment(softDeleteAttribute!.Comment)!.HasDefaultValue(false);
+            entityTypeBuilder.Property(typeof(bool), softDeleteAttribute!.ColumnName)?.HasComment(softDeleteAttribute!.Comment)?.HasDefaultValue(false)?.HasColumnOrder(100);
         }
     }
 
