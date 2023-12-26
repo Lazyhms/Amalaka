@@ -1,26 +1,28 @@
-﻿using System.Collections;
-using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 
 namespace System;
 
 public static class SharedTypeExtensions
 {
-    public static object? GetValue<T>(this T source, string propertyName) where T : class
+    public static object? GetValue<T>(this T source, string propertyName) where T : class =>
+        source.GetValue(typeof(T).GetProperty(propertyName)!);
+
+    public static object? GetValue<T>(this T source, PropertyInfo propertyInfo) where T : class
     {
         ArgumentNullException.ThrowIfNull(source);
 
-        var propertyInfo = typeof(T).GetProperty(propertyName);
         var memberExpression = Expression.Property(Expression.Constant(source), propertyInfo!);
         var lambdaExpression = Expression.Lambda<Func<object>>(Expression.Convert(memberExpression, typeof(object)));
         return lambdaExpression.Compile()();
     }
 
-    public static T SetValue<T>(this T source, string propertyName, object? value) where T : class
+    public static T SetValue<T>(this T source, string propertyName, object? value) where T : class =>
+        source.SetValue(typeof(T).GetProperty(propertyName)!, value);
+
+    public static T SetValue<T>(this T source, PropertyInfo propertyInfo, object? value) where T : class
     {
         ArgumentNullException.ThrowIfNull(source);
 
-        var propertyInfo = typeof(T).GetProperty(propertyName);
         var valueParameter = Expression.Parameter(typeof(object), "v");
         var memberExpression = Expression.Property(Expression.Constant(source), propertyInfo!);
         var constantExpression = Expression.Constant(value, propertyInfo!.PropertyType);
@@ -31,42 +33,75 @@ public static class SharedTypeExtensions
 
     public static bool TryGetValue<T>(this T source, string propertyName, out object? value) where T : class
     {
-        ArgumentNullException.ThrowIfNull(source);
-
         if (string.IsNullOrWhiteSpace(propertyName))
         {
             value = null;
             return false;
         }
 
-        var propertyInfo = typeof(T).GetProperty(propertyName);
+        return source.TryGetValue(typeof(T).GetProperty(propertyName), out value);
+    }
+
+    public static bool TryGetValue<T>(this T source, PropertyInfo? propertyInfo, out object? value) where T : class
+    {
         if (propertyInfo == null)
         {
             value = null;
             return false;
         }
 
-        value = source.GetValue(propertyName);
+        value = source.GetValue(propertyInfo!);
         return true;
     }
 
     public static bool TrySetValue<T>(this T source, string propertyName, object? value) where T : class
     {
-        ArgumentNullException.ThrowIfNull(source);
-
         if (string.IsNullOrWhiteSpace(propertyName))
         {
             return false;
         }
 
-        var propertyInfo = typeof(T).GetProperty(propertyName);
+        return source.TrySetValue(typeof(T).GetProperty(propertyName), value);
+    }
+
+    public static bool TrySetValue<T>(this T source, PropertyInfo? propertyInfo, object? value) where T : class
+    {
         if (propertyInfo == null)
         {
             return false;
         }
 
-        source.SetValue(propertyName, value);
+        source.SetValue(propertyInfo, value);
         return true;
+    }
+
+    public static bool TryGetMember(this Type type, string propertyOrFieldName, out MemberInfo? memberInfo)
+    {
+        if (type.TryGetProperty(propertyOrFieldName, out var propertyInfo))
+        {
+            memberInfo = propertyInfo;
+            return true;
+        }
+        if (type.TryGetField(propertyOrFieldName, out var fieldInfo))
+        {
+            memberInfo = fieldInfo;
+            return true;
+        }
+
+        memberInfo = null;
+        return false;
+    }
+
+    public static bool TryGetProperty(this Type type, string propertyName, out PropertyInfo? propertyInfo)
+    {
+        propertyInfo = type.GetProperty(propertyName);
+        return propertyInfo is null;
+    }
+
+    public static bool TryGetField(this Type type, string fieldName, out FieldInfo? fieldInfo)
+    {
+        fieldInfo = type.GetField(fieldName);
+        return fieldInfo is null;
     }
 
     public static Type UnwrapNullableType(this Type type)
@@ -86,8 +121,8 @@ public static class SharedTypeExtensions
     {
         type = type.UnwrapNullableType();
 
-        return type == typeof(DateTime) 
-            || type == typeof(DateOnly) 
+        return type == typeof(DateTime)
+            || type == typeof(DateOnly)
             || type == typeof(TimeOnly);
     }
 

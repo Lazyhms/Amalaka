@@ -14,12 +14,15 @@ public static partial class QueryableExtensions
             ParameterExpression parameterExpression = Expression.Parameter(valueFactory.TSource, "s");
             foreach (var property in valueFactory.TResult.GetProperties())
             {
-                var sourcePropertyInfo = valueFactory.TSource.GetProperty(property.Name);
-                if (sourcePropertyInfo is null)
+                if (property.TryGetCustomAttribute<SelectFromAttribute>(out var attribute))
+                {
+
+                }
+                if (!valueFactory.TSource.TryGetMember(property.Name, out var memberInfo))
                 {
                     continue;
                 }
-                var memberExpression = Expression.MakeMemberAccess(parameterExpression, sourcePropertyInfo);
+                var memberExpression = Expression.MakeMemberAccess(parameterExpression, memberInfo!);
                 memberBindings.Add(Expression.Bind(property, memberExpression));
             }
             var memberInitExpression = Expression.MemberInit(Expression.New(valueFactory.TResult), memberBindings);

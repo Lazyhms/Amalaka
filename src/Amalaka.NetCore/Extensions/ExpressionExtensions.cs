@@ -1,6 +1,4 @@
-﻿using System.Linq.Expressions;
-
-namespace Amalaka.NetCore.Extensions;
+﻿namespace System.Linq.Expressions;
 
 public static class ExpressionExtensions
 {

@@ -1,6 +1,6 @@
 ﻿namespace System.Collections.Generic;
 
-public static class EnumerableExtensions
+public static partial class EnumerableExtensions
 {
     public static void ForEach<T>(this IEnumerable<T> source, Action<T> action)
     {
@@ -35,6 +35,18 @@ public static class EnumerableExtensions
 
     public static bool IsNotNullOrEmpty<T>(this IEnumerable<T> values)
         => !values.IsNullOrEmpty();
+
+    public static IEnumerable<TSource> Where<TSource>(this IEnumerable<TSource> source, bool condition, Func<TSource, bool> predicate)
+        => condition ? source.Where(predicate) : source;
+
+    public static IEnumerable<TSource> Where<TSource>(this IEnumerable<TSource> source, bool condition, Func<TSource, int, bool> predicate)
+        => condition ? source.Where(predicate) : source;
+
+    public static IEnumerable<T> Pagination<T>(this IEnumerable<T> source, int pageIndex, int pageSize, out int count)
+    {
+        count = source.Count();
+        return source.Skip(pageSize * (pageIndex - 1)).Take(pageSize);
+    }
 
     public static IEnumerable<TResult> LeftJoin<TOuter, TInner, TKey, TResult>(
         this IEnumerable<TOuter> outer,

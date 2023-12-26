@@ -1,21 +1,17 @@
-﻿using System.ComponentModel;
-using System.Reflection;
+﻿namespace System;
 
-namespace System
+public static class EnumExtensions
 {
-    public static class EnumExtensions
+    public static TAttribute? GetAttributeOfType<TAttribute>(this Enum value) where TAttribute : Attribute
     {
-        public static TAttribute? GetAttributeOfType<TAttribute>(this Enum value) where TAttribute : Attribute
+        var fieldInfo = value.GetType().GetField(value.ToString());
+        if (fieldInfo.TryGetCustomAttribute<TAttribute>(out var attribute))
         {
-            var fieldInfo = value.GetType().GetField(value.ToString());
-            if (fieldInfo.TryGetCustomAttribute<TAttribute>(out var attribute))
-            {
-                return attribute;
-            }
-            return null;
+            return attribute;
         }
-
-        public static string GetDescription<T>(this T value) where T : Enum
-            => value.GetAttributeOfType<DescriptionAttribute>()?.Description ?? string.Empty;
+        return null;
     }
+
+    public static string GetDescription<T>(this T value) where T : Enum
+        => value.GetAttributeOfType<DescriptionAttribute>()?.Description ?? string.Empty;
 }
