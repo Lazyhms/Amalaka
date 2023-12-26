@@ -8,9 +8,9 @@ namespace System
         public static TAttribute? GetAttributeOfType<TAttribute>(this Enum value) where TAttribute : Attribute
         {
             var fieldInfo = value.GetType().GetField(value.ToString());
-            if (fieldInfo is not null && fieldInfo.IsDefined(typeof(TAttribute)))
+            if (fieldInfo.TryGetCustomAttribute<TAttribute>(out var attribute))
             {
-                return fieldInfo.GetCustomAttribute<TAttribute>();
+                return attribute;
             }
             return null;
         }

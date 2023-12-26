@@ -16,7 +16,7 @@ public static class RegisterAssemblyServiceCollectionExtensions
     {
         var assemblyServiceTypes = assembly.GetTypes();
 
-        assemblyServiceTypes.Where(w => w.IsInterface && (w.IsDefined(typeof(DependencyAttribute)) || _dependencyTypeMapping.Any(a => a.IsAssignableFrom(w)))).ForEach(serviceType =>
+        assemblyServiceTypes.Where(w => w.IsInterface && (w.IsDefined<DependencyAttribute>() || _dependencyTypeMapping.Any(a => a.IsAssignableFrom(w)))).ForEach(serviceType =>
         {
             var serviceDescriptor = serviceType.GetCustomAttribute<DependencyAttribute>();
             var implementationTypes = assemblyServiceTypes.Where(implementationType => serviceType.IsAssignableFrom(implementationType) && serviceType != implementationType);

@@ -1,11 +1,11 @@
 ﻿namespace System.Linq.Expressions;
 
-public static class QueryableExtensions
+public static partial class QueryableExtensions
 {
-    public static IQueryable<TSource> Where<TSource>(this IQueryable<TSource> source, bool condition, Expression<Func<TSource, bool>> predicate) 
+    public static IQueryable<TSource> Where<TSource>(this IQueryable<TSource> source, bool condition, Expression<Func<TSource, bool>> predicate)
         => condition ? source.Where(predicate) : source;
 
-    public static IQueryable<TSource> Where<TSource>(this IQueryable<TSource> source, bool condition, Expression<Func<TSource, int, bool>> predicate) 
+    public static IQueryable<TSource> Where<TSource>(this IQueryable<TSource> source, bool condition, Expression<Func<TSource, int, bool>> predicate)
         => condition ? source.Where(predicate) : source;
 
     public static IQueryable<TSource> Pagination<TSource>(this IQueryable<TSource> source, int pageIndex, int pageSize, out int count)
