@@ -7,15 +7,15 @@
 		<RootNamespace>Microsoft.EntityFrameworkCore</RootNamespace>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
-
-	<ItemGroup>
-	  <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.0-beta.2" />
-	</ItemGroup>
-
+	
 	<ItemGroup>
 		<Compile Include="..\Shared\*.cs" />
 	</ItemGroup>
 	
+	<ItemGroup>
+		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.0-beta.2" />
+	</ItemGroup>
+
 	<ItemGroup>
 		<Using Include="System.Reflection" />
 		<Using Include="System.ComponentModel" />

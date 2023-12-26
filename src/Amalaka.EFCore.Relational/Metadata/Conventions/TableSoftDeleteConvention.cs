@@ -14,13 +14,12 @@ public sealed class TableSoftDeleteConvention(SoftDeleteOptions softDeleteOption
             return;
         }
 
-        if (softDeleteOptions.Enabled && !clrType.IsDefined(typeof(HardDeleteAttribute)))
+        if (softDeleteOptions.Enabled && !clrType.IsDefined<HardDeleteAttribute>())
         {
             entityTypeBuilder.Property(typeof(bool), softDeleteOptions.ColumnName)?.HasComment(softDeleteOptions.Comment)?.HasDefaultValue(false)?.HasColumnOrder(100);
         }
-        else if (!softDeleteOptions.Enabled && clrType.IsDefined(typeof(SoftDeleteAttribute)))
+        else if (!softDeleteOptions.Enabled && clrType.TryGetCustomAttribute<SoftDeleteAttribute>(out var softDeleteAttribute))
         {
-            var softDeleteAttribute = clrType.GetCustomAttribute<SoftDeleteAttribute>();
             entityTypeBuilder.Property(typeof(bool), softDeleteAttribute!.ColumnName)?.HasComment(softDeleteAttribute!.Comment)?.HasDefaultValue(false)?.HasColumnOrder(100);
         }
     }
@@ -29,13 +28,12 @@ public sealed class TableSoftDeleteConvention(SoftDeleteOptions softDeleteOption
     {
         foreach (var conventionEntityType in modelBuilder.Metadata.GetEntityTypes())
         {
-            if (softDeleteOptions.Enabled && !conventionEntityType.ClrType.IsDefined(typeof(HardDeleteAttribute)))
+            if (softDeleteOptions.Enabled && !conventionEntityType.ClrType.IsDefined<HardDeleteAttribute>())
             {
                 ProcessModelFinalizing(conventionEntityType, softDeleteOptions.ColumnName);
             }
-            else if (!softDeleteOptions.Enabled && conventionEntityType.ClrType.IsDefined(typeof(SoftDeleteAttribute)))
+            else if (!softDeleteOptions.Enabled && conventionEntityType.ClrType.TryGetCustomAttribute<SoftDeleteAttribute>(out var softDeleteAttribute))
             {
-                var softDeleteAttribute = conventionEntityType.ClrType.GetCustomAttribute<SoftDeleteAttribute>();
                 ProcessModelFinalizing(conventionEntityType, softDeleteAttribute!.ColumnName);
             }
         }

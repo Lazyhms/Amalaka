@@ -7,7 +7,7 @@ public static class ModelBuilderExtensions
 
     public static ModelBuilder ApplyEntityFromAssembly(this ModelBuilder builder, Assembly assembly)
     {
-        return builder.ApplyEntityFromAssembly(assembly, w => w.IsDefined(typeof(DbEntityAttribute)));
+        return builder.ApplyEntityFromAssembly(assembly, w => w.IsDefined<DbEntityAttribute>());
     }
 
     public static ModelBuilder ApplyEntityFromAssembly(this ModelBuilder builder, Assembly assembly, Func<Type, bool> predicate)

@@ -2,7 +2,7 @@
 
 namespace Microsoft.EntityFrameworkCore;
 
-internal static class NoneRelationalDbContextOptionsBuilderExtensions
+internal static class DbContextOptionsBuilderExtensions
 {
     public static DbContextOptionsBuilder AddOrUpdateExtension<TExtension>(this DbContextOptionsBuilder optionsBuilder) where TExtension : NoneRelationalOptionsExtension, new()
     {

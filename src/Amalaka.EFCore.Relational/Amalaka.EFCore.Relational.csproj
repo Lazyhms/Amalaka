@@ -9,6 +9,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<Compile Include="..\Shared\*.cs" />
+	</ItemGroup>
+	
+	<ItemGroup>
 		<Using Include="System.Reflection" />
 		<Using Include="System.ComponentModel" />
 		<Using Include="Microsoft.EntityFrameworkCore" />
