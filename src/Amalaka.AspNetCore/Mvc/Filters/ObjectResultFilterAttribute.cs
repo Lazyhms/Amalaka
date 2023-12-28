@@ -5,13 +5,13 @@ public sealed class ObjectResultFilterAttribute() : ResultFilterAttribute
 {
     public override Task OnResultExecutionAsync(ResultExecutingContext context, ResultExecutionDelegate next)
     {
-        if (context.Result is ObjectResult okObjectResult)
+        if (context.Result is ObjectResult objectResult)
         {
             context.Result = new OkObjectResult(new
             {
-                Success = true,
-                Message = "",
-                Data = okObjectResult.Value
+                Code = 0,
+                Message = "操作成功",
+                Data = objectResult.Value
             });
         }
         return base.OnResultExecutionAsync(context, next);

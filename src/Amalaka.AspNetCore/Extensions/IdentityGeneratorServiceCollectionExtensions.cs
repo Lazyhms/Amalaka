@@ -1,5 +1,5 @@
-﻿using Amalaka.AspNetCore.IdentityGenerator;
-using Amalaka.AspNetCore.IdentityGenerator.Internal;
+﻿using System.IdentityGenerator;
+using System.IdentityGenerator.Internal;
 
 namespace Microsoft.Extensions.DependencyInjection;
 

@@ -8,8 +8,6 @@ public static class ExceptionHandlerServiceCollectionExtensions
     {
         services.AddExceptionHandler<GlobalExceptionHandler>();
         services.AddExceptionHandler<BusinessExceptionHandler>();
-        services.AddExceptionHandler<ArgumentExceptionHandler>();
-        services.AddExceptionHandler<ArgumentNullExceptionHandler>();
 
         return services;
     }

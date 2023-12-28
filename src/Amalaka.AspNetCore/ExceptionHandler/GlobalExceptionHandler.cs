@@ -1,17 +1,29 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace Microsoft.AspNetCore.Diagnostics;
 
-public sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger, IWebHostEnvironment webHostEnvironment)
-    : ExceptionHandler<GlobalExceptionHandler, Exception>(logger, webHostEnvironment)
+public sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger, IWebHostEnvironment webHostEnvironment) : IExceptionHandler
 {
-    public override ProblemDetails ProblemDetails { get; set; } = new()
+    public async ValueTask<bool> TryHandleAsync(HttpContext context, Exception exception, CancellationToken cancellationToken)
     {
-        Title = "服务器异常",
-        Detail = "服务器发生错误,请联系管理员",
-        Status = StatusCodes.Status500InternalServerError,
-    };
+        if (exception is Exception handledException)
+        {
+            logger.LogError(exception, "Title:服务器异常 HResult:{HResult}", handledException.HResult);
+
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            await context.Response.WriteAsJsonAsync(new
+            {
+                Code = 2,
+                Message = webHostEnvironment.IsDevelopment()
+                            ? handledException.Message
+                            : "服务器发生错误,请联系管理员"
+            }, cancellationToken);
+
+            return true;
+        }
+        return false;
+    }
 }

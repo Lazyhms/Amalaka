@@ -10,11 +10,9 @@ public static class MvcOptionsServiceCollectionExensions
     {
         services.Configure<MvcOptions>(options =>
         {
+            options.Filters.Add<ObjectResultFilterAttribute>();
             options.Filters.Add<GlobalExceptionFilterAttribute>();
             options.Filters.Add<BusinessExceptionFilterAttribute>();
-            options.Filters.Add<ArgumentExceptionFilterAttribute>();
-            options.Filters.Add<ArgumentNullExceptionFilterAttribute>();
-            options.Filters.Add<ObjectResultFilterAttribute>();
             options.ModelMetadataDetailsProviders.Add(new LocalizationModelValidationMetadataProvider());
         });
         return services;
