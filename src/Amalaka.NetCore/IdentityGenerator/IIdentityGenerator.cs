@@ -1,4 +1,4 @@
-﻿namespace Amalaka.AspNetCore.IdentityGenerator;
+﻿namespace System;
 
 public interface IIdentityGenerator
 {

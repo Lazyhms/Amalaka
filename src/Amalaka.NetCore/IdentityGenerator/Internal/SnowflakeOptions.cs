@@ -1,4 +1,4 @@
-﻿namespace Amalaka.AspNetCore.IdentityGenerator.Internal;
+﻿namespace System;
 
 public class SnowflakeOptions
 {

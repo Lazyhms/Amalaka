@@ -1,7 +1,12 @@
-﻿namespace System;
+﻿using System.Text.RegularExpressions;
 
-public static class StringExtensions
+namespace System;
+
+public static partial class StringExtensions
 {
+    [GeneratedRegex("[A-Z][a-z]*")]
+    private static partial Regex RegexCapitalLetters();
+
     public static bool IsNullOrEmpty(this string? source)
         => string.IsNullOrEmpty(source);
 
@@ -19,4 +24,7 @@ public static class StringExtensions
 
     public static bool IsNotNullOrWhiteSpace(this string? source)
         => !string.IsNullOrWhiteSpace(source);
+
+    public static string[] SplitCapitalLetters(this string? source) 
+        => source.IsNullOrWhiteSpace() ? ([]) : ([.. RegexCapitalLetters().Matches(source!).Select(s => s.Value)]);
 }

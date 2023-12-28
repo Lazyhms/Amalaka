@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace System;
 
@@ -95,13 +96,13 @@ public static class SharedTypeExtensions
     public static bool TryGetProperty(this Type type, string propertyName, out PropertyInfo? propertyInfo)
     {
         propertyInfo = type.GetProperty(propertyName);
-        return propertyInfo is null;
+        return propertyInfo is null ? false : true;
     }
 
     public static bool TryGetField(this Type type, string fieldName, out FieldInfo? fieldInfo)
     {
         fieldInfo = type.GetField(fieldName);
-        return fieldInfo is null;
+        return fieldInfo is null ? false : true;
     }
 
     public static Type UnwrapNullableType(this Type type)
