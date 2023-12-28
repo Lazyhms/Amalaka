@@ -1,4 +1,4 @@
-﻿namespace System.Linq.Expressions;
+﻿namespace System.Linq;
 
 public static partial class QueryableExtensions
 {
@@ -16,7 +16,7 @@ public static partial class QueryableExtensions
 
     public static IQueryable<TResult> LeftJoin<TOuter, TInner, TKey, TResult>(
         this IQueryable<TOuter> outer,
-        IQueryable<TInner> inner,
+        IEnumerable<TInner> inner,
         Expression<Func<TOuter, TKey>> outerKeySelector,
         Expression<Func<TInner, TKey>> innerKeySelector,
         Func<TOuter, TInner?, TResult> resultSelector)

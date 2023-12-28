@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace System;
 
-public static class SharedTypeExtensions
+public static partial class SharedTypeExtensions
 {
     public static object? GetValue<T>(this T source, string propertyName) where T : class =>
         source.GetValue(typeof(T).GetProperty(propertyName)!);
