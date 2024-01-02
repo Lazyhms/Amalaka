@@ -2,5 +2,7 @@
 
 public class MethodCallTranslatorPlugin(ISqlExpressionFactory sqlExpressionFactory) : IMethodCallTranslatorPlugin
 {
+    public ISqlExpressionFactory SqlExpressionFactory => sqlExpressionFactory;
+
     public IEnumerable<IMethodCallTranslator> Translators => [];
 }

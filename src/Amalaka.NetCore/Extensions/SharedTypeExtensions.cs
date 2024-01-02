@@ -1,7 +1,6 @@
-﻿using System.Reflection;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 
-namespace System;
+namespace System.Reflection;
 
 public static partial class SharedTypeExtensions
 {
@@ -102,7 +101,7 @@ public static partial class SharedTypeExtensions
     public static bool TryGetField(this Type type, string fieldName, out FieldInfo? fieldInfo)
     {
         fieldInfo = type.GetField(fieldName);
-        return fieldInfo is null ? false : true;
+        return fieldInfo is not null;
     }
 
     public static Type UnwrapNullableType(this Type type)
