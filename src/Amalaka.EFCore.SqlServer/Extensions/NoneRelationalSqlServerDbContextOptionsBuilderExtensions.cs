@@ -4,7 +4,8 @@ public static class NoneRelationalSqlServerDbContextOptionsBuilderExtensions
 {
     public static DbContextOptionsBuilder UseAmalakaSqlServer(this DbContextOptionsBuilder optionsBuilder, Action<NoneRelationalSqlServerDbContextOptionsBuilder>? sqlServerOptionsAction = null)
     {
-        optionsBuilder.AddOrUpdateExtension<NoneRelationalSqlServerOptionsExtension>();
+        var extension = optionsBuilder.GetOrCreateExtension<NoneRelationalSqlServerOptionsExtension>();
+        optionsBuilder.AddOrUpdateExtension(extension);
         sqlServerOptionsAction?.Invoke(new NoneRelationalSqlServerDbContextOptionsBuilder(optionsBuilder));
         return optionsBuilder;
     }

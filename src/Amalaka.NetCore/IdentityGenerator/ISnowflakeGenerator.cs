@@ -1,6 +1,6 @@
 ﻿namespace System;
 
-public interface IIdentityGenerator
+public interface ISnowflakeGenerator
 {
     long NextId();
 }

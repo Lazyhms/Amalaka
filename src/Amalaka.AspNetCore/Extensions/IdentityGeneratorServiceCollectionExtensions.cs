@@ -9,7 +9,7 @@ public static class IdentityGeneratorServiceCollectionExtensions
             e.MachingId = 0;
             e.DataCenterId = 0;
         });
-        services.AddSingleton<IIdentityGenerator, SnowflakeGenerator>();
+        services.AddSingleton<ISnowflakeGenerator, SnowflakeGenerator>();
         return services;
     }
 }

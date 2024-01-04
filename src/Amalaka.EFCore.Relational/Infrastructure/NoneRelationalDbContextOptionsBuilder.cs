@@ -18,7 +18,8 @@ public abstract class NoneRelationalDbContextOptionsBuilder<TBuilder, TExtension
 
     protected virtual TBuilder WithOption(Func<TExtension, TExtension> setAction)
     {
-        OptionsBuilder.AddOrUpdateExtension<TExtension>();
+        var extension = setAction(OptionsBuilder.GetOrCreateExtension<TExtension>());
+        OptionsBuilder.AddOrUpdateExtension(extension);
         return (TBuilder)this;
     }
 

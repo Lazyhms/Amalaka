@@ -18,8 +18,8 @@ public sealed class GlobalExceptionFilterAttribute(ILogger<GlobalExceptionFilter
             await context.HttpContext.Response.WriteAsJsonAsync(new
             {
                 Code = 2,
-                Message = webHostEnvironment.IsDevelopment() 
-                            ? handledException.Message 
+                Message = webHostEnvironment.IsDevelopment()
+                            ? handledException.Message
                             : "服务器发生错误,请联系管理员"
             });
         }

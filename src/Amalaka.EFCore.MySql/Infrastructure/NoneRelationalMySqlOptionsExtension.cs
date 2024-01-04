@@ -2,28 +2,28 @@
 
 namespace Microsoft.EntityFrameworkCore.Infrastructure;
 
-public class NoneRelationalMySqOptionsExtension : NoneRelationalOptionsExtension
+public class NoneRelationalMySqlOptionsExtension : NoneRelationalOptionsExtension
 {
     private DbContextOptionsExtensionInfo? _info;
 
-    public NoneRelationalMySqOptionsExtension()
+    public NoneRelationalMySqlOptionsExtension()
     {
     }
 
-    public NoneRelationalMySqOptionsExtension(NoneRelationalMySqOptionsExtension copyFrom) : base(copyFrom)
+    public NoneRelationalMySqlOptionsExtension(NoneRelationalMySqlOptionsExtension copyFrom) : base(copyFrom)
     {
     }
 
     public override DbContextOptionsExtensionInfo Info
         => _info ??= new MySqlExtensionInfo(this);
 
-    protected override NoneRelationalMySqOptionsExtension Clone()
+    protected override NoneRelationalMySqlOptionsExtension Clone()
         => new(this);
 
     private sealed class MySqlExtensionInfo(IDbContextOptionsExtension extension) : ExtensionInfo(extension)
     {
-        private new NoneRelationalMySqOptionsExtension Extension
-            => (NoneRelationalMySqOptionsExtension)base.Extension;
+        private new NoneRelationalMySqlOptionsExtension Extension
+            => (NoneRelationalMySqlOptionsExtension)base.Extension;
 
         public override bool ShouldUseSameServiceProvider(DbContextOptionsExtensionInfo other)
             => other is MySqlExtensionInfo;

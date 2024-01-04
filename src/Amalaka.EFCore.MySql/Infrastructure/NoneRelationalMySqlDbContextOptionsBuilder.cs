@@ -3,7 +3,7 @@
 namespace Microsoft.EntityFrameworkCore;
 
 public class NoneRelationalMySqlDbContextOptionsBuilder(DbContextOptionsBuilder optionsBuilder)
-    : NoneRelationalDbContextOptionsBuilder<NoneRelationalMySqlDbContextOptionsBuilder, NoneRelationalMySqOptionsExtension>(optionsBuilder)
+    : NoneRelationalDbContextOptionsBuilder<NoneRelationalMySqlDbContextOptionsBuilder, NoneRelationalMySqlOptionsExtension>(optionsBuilder)
 {
     public NoneRelationalMySqlDbContextOptionsBuilder WithMigrationNoneForeignKey()
     {

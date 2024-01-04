@@ -2,15 +2,18 @@
 
 public static class MemberExtensions
 {
-    public static bool IsDefined<TAttribute>(this Assembly assembly) where TAttribute : Attribute
-    {
-        return assembly.IsDefined(typeof(TAttribute));
-    }
+    public static bool IsDefined<TAttribute>(this Assembly assembly) where TAttribute : Attribute 
+        => assembly.IsDefined(typeof(TAttribute));
 
-    public static bool IsDefined<TAttribute>(this MemberInfo memberInfo) where TAttribute : Attribute
+    public static bool IsDefined<TAttribute>(this MemberInfo memberInfo) where TAttribute : Attribute 
+        => memberInfo.IsDefined(typeof(TAttribute));
+
+    public static Type GetMemeberType(this MemberInfo memberInfo) => memberInfo switch
     {
-        return memberInfo.IsDefined(typeof(TAttribute));
-    }
+        PropertyInfo propertyInfo => propertyInfo.PropertyType,
+        FieldInfo fieldInfo => fieldInfo.FieldType,
+        _ => throw new NotSupportedException()
+    };
 
     public static bool TryGetCustomAttribute<TAttribute>(this MemberInfo? memberInfo, out TAttribute? attribute) where TAttribute : Attribute
     {
