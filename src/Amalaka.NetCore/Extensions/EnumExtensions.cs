@@ -12,6 +12,6 @@ public static class EnumExtensions
         return null;
     }
 
-    public static string GetDescription<T>(this T value) where T : Enum
+    public static string GetDescription<TEnum>(this TEnum value) where TEnum : Enum
         => value.GetAttributeOfType<DescriptionAttribute>()?.Description ?? string.Empty;
 }
