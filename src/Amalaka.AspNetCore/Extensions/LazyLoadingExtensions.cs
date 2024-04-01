@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection.Internal;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-public static class LazyLoadingServiceCollectionExtensions
+public static class LazyLoadingExtensions
 {
     public static IServiceCollection AddLazyLoadingAccessor(this IServiceCollection services)
     {

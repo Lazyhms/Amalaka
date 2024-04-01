@@ -19,7 +19,7 @@ public sealed class GlobalExceptionFilterAttribute(ILogger<GlobalExceptionFilter
             {
                 Code = 2,
                 Message = webHostEnvironment.IsDevelopment()
-                            ? handledException.Message
+                            ? handledException.ToString()
                             : "服务器发生错误,请联系管理员"
             });
         }

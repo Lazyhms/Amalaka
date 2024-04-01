@@ -1,6 +1,6 @@
 ﻿namespace Microsoft.Extensions.DependencyInjection;
 
-public static class IdentityGeneratorServiceCollectionExtensions
+public static class IdentityGeneratorExtensions
 {
     public static IServiceCollection AddSnowflakeIdentityGenerator(this IServiceCollection services, Action<SnowflakeOptions>? setupAction = null)
     {

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-public static class MvcOptionsServiceCollectionExensions
+public static class MvcServiceExensions
 {
     public static IServiceCollection ConfigureMvcOptions(this IServiceCollection services)
     {

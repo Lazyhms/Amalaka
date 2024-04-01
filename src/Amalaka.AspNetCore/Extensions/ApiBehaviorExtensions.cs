@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
 namespace Microsoft.Extensions.DependencyInjection;
-public static class ApiBehaviorOptionsServiceCollectionExtensions
+
+public static class ApiBehaviorExtensions
 {
     public static IServiceCollection ConfigureApiBehaviorInvalidModelStateResponse(this IServiceCollection services, Func<ActionContext, IActionResult>? invalidModelStateResponse = null)
     {

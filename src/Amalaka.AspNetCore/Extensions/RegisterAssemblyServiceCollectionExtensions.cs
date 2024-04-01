@@ -5,7 +5,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class RegisterAssemblyServiceCollectionExtensions
 {
-    private static readonly IReadOnlyCollection<Type> _dependencyTypeMapping = new[] { typeof(IScoped), typeof(ISingleton), typeof(ITransient) };
+    private static readonly IReadOnlyCollection<Type> _dependencyTypeMapping = [typeof(IScoped), typeof(ISingleton), typeof(ITransient)];
 
     public static IServiceCollection RegisterDependencyServiceFromAssembly(this IServiceCollection services, string assemblyName)
     {

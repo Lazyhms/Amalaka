@@ -2,7 +2,7 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-public static class ExceptionHandlerServiceCollectionExtensions
+public static class ExceptionHandlerExtensions
 {
     public static IServiceCollection AddExceptionHandler(this IServiceCollection services)
     {
