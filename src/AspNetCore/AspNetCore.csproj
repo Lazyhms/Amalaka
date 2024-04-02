@@ -4,6 +4,8 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+		<RootNamespace>Microsoft.AspNetCore</RootNamespace>
+		<AssemblyName>Microsoft.AspNetCore.App.Extensions</AssemblyName>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -11,6 +13,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Amalaka.NetCore\Amalaka.NetCore.csproj" />
+	  <ProjectReference Include="..\NetCore\NetCore.csproj" />
 	</ItemGroup>
 </Project>

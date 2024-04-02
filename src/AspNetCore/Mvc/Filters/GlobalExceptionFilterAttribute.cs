@@ -11,7 +11,7 @@ public sealed class GlobalExceptionFilterAttribute(ILogger<GlobalExceptionFilter
     {
         if (context.Exception is Exception handledException)
         {
-            logger.LogError(context.Exception, "Title:服务器异常 HResult:{HResult}", handledException.HResult);
+            logger.LogError(context.Exception, "Title:系统异常 HResult:{HResult}", handledException.HResult);
 
             context.ExceptionHandled = true;
             context.HttpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
