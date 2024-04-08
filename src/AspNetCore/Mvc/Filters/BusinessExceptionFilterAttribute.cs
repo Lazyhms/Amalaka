@@ -16,7 +16,6 @@ public sealed class BusinessExceptionFilterAttribute(ILogger<BusinessExceptionFi
             await context.HttpContext.Response.WriteAsJsonAsync(new
             {
                 Code = 1,
-                Data = string.Empty,
                 handledException.Message,
             });
         }

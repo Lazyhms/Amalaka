@@ -4,7 +4,8 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class ApiBehaviorExtensions
 {
-    public static IServiceCollection ConfigureApiBehaviorInvalidModelStateResponse(this IServiceCollection services, Func<ActionContext, IActionResult>? invalidModelStateResponse = null)
+    public static IServiceCollection ConfigureApiBehaviorInvalidModelStateResponse(
+        this IServiceCollection services, Func<ActionContext, ObjectResult>? invalidModelStateResponse = null)
     {
         services.Configure<ApiBehaviorOptions>(options =>
         {
@@ -14,7 +15,6 @@ public static class ApiBehaviorExtensions
                 {
                     return invalidModelStateResponse!.Invoke(context);
                 }
-
                 return new BadRequestObjectResult(context.ModelState);
             };
         });
