@@ -6,22 +6,10 @@ namespace Microsoft.EntityFrameworkCore;
 public static partial class DbSetExtensions
 {
     public static EntityEntry<TSource> Update<TSource>(this DbSet<TSource> dbSet, object obj) where TSource : class
-    {
-        var entityEntry = dbSet.GetOrCreateEntityEntry(obj);
+        => dbSet.GetOrCreateEntityEntry(obj);
 
-        entityEntry.CurrentValues.SetValues(obj);
-
-        return entityEntry;
-    }
-
-    public static EntityEntry<TSource> Update<TSource>(this DbSet<TSource> dbSet, IDictionary<string, object> objectInstance) where TSource : class
-    {
-        var entityEntry = dbSet.GetOrCreateEntityEntry(objectInstance);
-
-        entityEntry.CurrentValues.SetValues(objectInstance);
-
-        return entityEntry;
-    }
+    public static EntityEntry<TSource> Update<TSource>(this DbSet<TSource> dbSet, IDictionary<string, object?> values) where TSource : class
+        => dbSet.GetOrCreateEntityEntry(values);
 
     public static EntityEntry<TSource> Update<TSource, TProperty>(this DbSet<TSource> dbSet, object obj, Expression<Func<TSource, TProperty>> ingoreKeySelector) where TSource : class
     {
@@ -35,9 +23,9 @@ public static partial class DbSetExtensions
         return entityEntry;
     }
 
-    public static EntityEntry<TSource> Update<TSource, TProperty>(this DbSet<TSource> dbSet, IDictionary<string, object> values, Expression<Func<TSource, TProperty>> ingoreKeySelector) where TSource : class
+    public static EntityEntry<TSource> Update<TSource, TProperty>(this DbSet<TSource> dbSet, IDictionary<string, object?> values, Expression<Func<TSource, TProperty>> ingoreKeySelector) where TSource : class
     {
-        var entityEntry = dbSet.GetOrCreateEntityEntry(values);
+        var entityEntry = dbSet.Update(values);
 
         foreach (var item in ingoreKeySelector.GetMemberAccessList())
         {
@@ -50,8 +38,6 @@ public static partial class DbSetExtensions
     public static EntityEntry<TSource> Update<TSource, TProperty>(this DbSet<TSource> dbSet, TSource value, Expression<Func<TSource, TProperty>> ingoreKeySelector) where TSource : class
     {
         var entityEntry = dbSet.GetOrCreateEntityEntry(value);
-
-        entityEntry.CurrentValues.SetValues(value);
 
         foreach (var item in ingoreKeySelector.GetMemberAccessList())
         {

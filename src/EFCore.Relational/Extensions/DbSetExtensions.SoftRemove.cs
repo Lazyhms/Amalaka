@@ -17,7 +17,7 @@ public static partial class DbSetExtensions
         => dbSet.GetOrCreateEntityEntry(value).SoftRemove();
 
     public static EntityEntry<TSource> SoftRemove<TSource>(this DbSet<TSource> dbSet, object obj) where TSource : class
-        => dbSet.GetOrCreateEntityEntry(objectInstance).SoftRemove();
+        => dbSet.GetOrCreateEntityEntry(obj).SoftRemove();
 
     public static void SoftRemoveRange<TSource>(this DbSet<TSource> dbSet, params int[] values) where TSource : class
         => dbSet.SoftRemoveRange((IEnumerable<int>)values);

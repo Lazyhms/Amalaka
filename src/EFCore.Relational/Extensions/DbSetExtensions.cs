@@ -70,7 +70,8 @@ public static partial class DbSetExtensions
         var entityEntry = dbSet.Local.FindEntry(propertyValues.Keys, propertyValues.Values)
             ?? dbSet.Entry(Activator.CreateInstance<TSource>());
 
-        entityEntry.OriginalValues.SetValues(obj);
+        entityEntry.OriginalValues.SetValues(propertyValues);
+        entityEntry.CurrentValues.SetValues(obj);
 
         return entityEntry;
     }
@@ -86,10 +87,9 @@ public static partial class DbSetExtensions
         var propertyValues = new Dictionary<string, object?>();
         foreach (var item in properties)
         {
-            var getter = obj.GetType().GetAnyProperty(item.Name)?.FindGetterProperty();
-            if (getter != null)
+            if (values.TryGetValue(item.Name, out var value))
             {
-                propertyValues.Add(item.Name, getter.GetValue(obj));
+                propertyValues.Add(item.Name, value);
             }
         }
 
@@ -97,6 +97,7 @@ public static partial class DbSetExtensions
             ?? dbSet.Entry(Activator.CreateInstance<TSource>());
 
         entityEntry.OriginalValues.SetValues(propertyValues);
+        entityEntry.CurrentValues.SetValues(values);
 
         return entityEntry;
     }
