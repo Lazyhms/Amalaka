@@ -23,4 +23,11 @@ internal static class MemberExtensions
         attribute = null;
         return false;
     }
+
+    public static string GetSimpleMemberName(this MemberInfo member)
+    {
+        var name = member.Name;
+        var index = name.LastIndexOf('.');
+        return index >= 0 ? name[(index + 1)..] : name;
+    }
 }

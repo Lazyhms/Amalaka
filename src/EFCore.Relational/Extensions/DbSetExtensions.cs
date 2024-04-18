@@ -1,96 +1,102 @@
-﻿using Amalaka.EntityFrameworkCore.Infrastructure.Internal;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
+﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using System.Linq.Expressions;
 
 namespace Microsoft.EntityFrameworkCore;
 
-public static class DbSetExtensions
+public static partial class DbSetExtensions
 {
-    public static EntityEntry<TSource> Remove<TSource>(this DbSet<TSource> source, object objectInstance) where TSource : class
-        => source.EntityEntry().Remove((entityEntry, properties) =>
-        {
-            if (objectInstance.GetType().IsClass || objectInstance.GetType().IsAnonymousType())
-            {
-                entityEntry.CurrentValues.SetValues(objectInstance);
-            }
-            else
-            {
-                entityEntry.Property(properties[0]).CurrentValue = objectInstance;
-            }
-        });
-
-    public static void RemoveRange<TSource>(this DbSet<TSource> source, params object[] objectInstances) where TSource : class
-        => source.RemoveRange((IEnumerable<object>)objectInstances);
-
-    public static void RemoveRange<TSource>(this DbSet<TSource> source, IEnumerable<object> objectInstances) where TSource : class
+    private static EntityEntry<TSource> GetOrCreateEntityEntry<TSource, TKey>(this DbSet<TSource> dbSet, TKey objectInstance) where TSource : class where TKey : struct
     {
-        foreach (var objectInstance in objectInstances!)
+        var properties = dbSet.EntityType.FindPrimaryKey()?.Properties;
+        if (properties is null || properties.Count == 0)
         {
-            source.SoftRemove(objectInstance);
+            throw new InvalidOperationException(CoreStrings.KeylessTypeTracked(dbSet.EntityType.DisplayName()));
         }
-    }
 
-    public static EntityEntry<TSource> SoftRemove<TSource>(this DbSet<TSource> source, object objectInstance) where TSource : class
-        => source.EntityEntry().SoftRemove((entityEntry, properties) =>
+        var propertyValues = new Dictionary<string, TKey?>();
+        foreach (var item in properties)
         {
-            if (objectInstance.GetType().IsClass || objectInstance.GetType().IsAnonymousType())
-            {
-                entityEntry.CurrentValues.SetValues(objectInstance);
-            }
-            else
-            {
-                entityEntry.Property(properties[0]).CurrentValue = Convert.ChangeType(objectInstance, properties[0].ClrType);
-            }
-        });
-
-    public static void SoftRemoveRange<TSource>(this DbSet<TSource> source, params object[] objectInstances) where TSource : class
-        => source.SoftRemoveRange((IEnumerable<object>)objectInstances);
-
-    public static void SoftRemoveRange<TSource>(this DbSet<TSource> source, IEnumerable<object> objectInstances) where TSource : class
-    {
-        foreach (var objectInstance in objectInstances!)
-        {
-            source.SoftRemove(objectInstance);
+            propertyValues.Add(item.Name, objectInstance);
         }
-    }
 
-    private static EntityEntry<TSource> EntityEntry<TSource>(this DbSet<TSource> source) where TSource : class
-        => source.Entry(Expression.Lambda<Func<TSource>>(Expression.New(typeof(TSource))).Compile().Invoke());
+        var entityEntry = dbSet.Local.FindEntry(objectInstance)
+            ?? dbSet.Entry(Activator.CreateInstance<TSource>());
 
-    private static EntityEntry<TSource> Remove<TSource>(this EntityEntry<TSource> entityEntry, Action<EntityEntry<TSource>, IReadOnlyList<IProperty>> removeAction) where TSource : class
-    {
-        var keyProperties = entityEntry.Metadata.FindPrimaryKey()?.Properties;
-        if (keyProperties is null || keyProperties.Count == 0)
-        {
-            throw new InvalidOperationException(CoreStrings.KeylessTypeTracked(entityEntry.Metadata.DisplayName()));
-        }
-        removeAction.Invoke(entityEntry, keyProperties);
-        entityEntry.State = EntityState.Deleted;
+        entityEntry.OriginalValues.SetValues(propertyValues);
+
         return entityEntry;
     }
 
-    private static EntityEntry<TSource> SoftRemove<TSource>(this EntityEntry<TSource> entityEntry, Action<EntityEntry<TSource>, IReadOnlyList<IProperty>> softDeleteAction) where TSource : class
+    private static EntityEntry<TSource> GetOrCreateEntityEntry<TSource>(this DbSet<TSource> dbSet, string objectInstance) where TSource : class
     {
-        var keyProperties = entityEntry.Metadata.FindPrimaryKey()?.Properties;
-        if (keyProperties is null || keyProperties.Count == 0)
+        var properties = dbSet.EntityType.FindPrimaryKey()?.Properties;
+        if (properties is null || properties.Count == 0)
         {
-            throw new InvalidOperationException(CoreStrings.KeylessTypeTracked(entityEntry.Metadata.DisplayName()));
+            throw new InvalidOperationException(CoreStrings.KeylessTypeTracked(dbSet.EntityType.DisplayName()));
         }
-        softDeleteAction.Invoke(entityEntry, keyProperties);
-        entityEntry.State = EntityState.Unchanged;
 
-        var softDeleteOptions = entityEntry.Context.GetService<INoneRelationalOptions>().SoftDeleteOptions;
-        if (softDeleteOptions.Enabled && !entityEntry.Metadata.ClrType.IsDefined<HardDeleteAttribute>())
+        var propertyValues = new Dictionary<string, string?>();
+        foreach (var item in properties)
         {
-            entityEntry.Property(softDeleteOptions.ColumnName).CurrentValue = true;
-            entityEntry.Property(softDeleteOptions.ColumnName).IsModified = true;
+            propertyValues.Add(item.Name, objectInstance);
         }
-        else if (!softDeleteOptions.Enabled && entityEntry.Metadata.ClrType.TryGetCustomAttribute<SoftDeleteAttribute>(out var softDeleteAttribute))
+
+        var entityEntry = dbSet.Local.FindEntry(objectInstance)
+            ?? dbSet.Entry(Activator.CreateInstance<TSource>());
+
+        entityEntry.OriginalValues.SetValues(propertyValues);
+
+        return entityEntry;
+    }
+
+    private static EntityEntry<TSource> GetOrCreateEntityEntry<TSource>(this DbSet<TSource> dbSet, object objectInstance) where TSource : class
+    {
+        var properties = dbSet.EntityType.FindPrimaryKey()?.Properties;
+        if (properties is null || properties.Count == 0)
         {
-            entityEntry.Property(softDeleteAttribute!.ColumnName).CurrentValue = true;
-            entityEntry.Property(softDeleteAttribute!.ColumnName).IsModified = true;
+            throw new InvalidOperationException(CoreStrings.KeylessTypeTracked(dbSet.EntityType.DisplayName()));
         }
+
+        var propertyValues = new Dictionary<string, object?>();
+        foreach (var item in properties)
+        {
+            var getter = objectInstance.GetType().GetAnyProperty(item.Name)?.FindGetterProperty();
+            if (getter != null)
+            {
+                propertyValues.Add(item.Name, getter.GetValue(objectInstance));
+            }
+        }
+
+        var entityEntry = dbSet.Local.FindEntry(propertyValues.Keys, propertyValues.Values)
+            ?? dbSet.Entry(Activator.CreateInstance<TSource>());
+
+        entityEntry.OriginalValues.SetValues(propertyValues);
+
+        return entityEntry;
+    }
+
+    private static EntityEntry<TSource> GetOrCreateEntityEntry<TSource>(this DbSet<TSource> dbSet, IDictionary<string, object> objectInstance) where TSource : class
+    {
+        var properties = dbSet.EntityType.FindPrimaryKey()?.Properties;
+        if (properties is null || properties.Count == 0)
+        {
+            throw new InvalidOperationException(CoreStrings.KeylessTypeTracked(dbSet.EntityType.DisplayName()));
+        }
+
+        var propertyValues = new List<object?>();
+        foreach (var item in properties)
+        {
+            if (objectInstance.TryGetValue(item.Name, out var value))
+            {
+                propertyValues.Add(value);
+            }
+        }
+
+        var entityEntry = dbSet.Local.FindEntry(properties, propertyValues)
+            ?? dbSet.Entry(Activator.CreateInstance<TSource>());
+
+        entityEntry.OriginalValues.SetValues(propertyValues);
+
         return entityEntry;
     }
 }

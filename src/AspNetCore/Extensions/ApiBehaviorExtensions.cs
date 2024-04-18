@@ -9,6 +9,7 @@ public static class ApiBehaviorExtensions
     {
         services.Configure<ApiBehaviorOptions>(options =>
         {
+            options.SuppressModelStateInvalidFilter = false;
             options.InvalidModelStateResponseFactory = context =>
             {
                 if (invalidModelStateResponse != null)
