@@ -2,12 +2,15 @@
 
 public sealed class JsonGuidConverter(GuidConverterOptions? converterOptions) : JsonConverter<Guid>
 {
+    private readonly static JsonConverter<Guid> s_defaultConverter =
+        (JsonConverter<Guid>)JsonSerializerOptions.Default.GetConverter(typeof(Guid));
+
     public JsonGuidConverter() : this(null)
     {
     }
 
     public override Guid Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        => reader.TryGetGuid(out var value) || Guid.TryParse(reader.GetString(), out value) ? value : default;
+        => s_defaultConverter.Read(ref reader, typeToConvert, options);
 
     public override void Write(Utf8JsonWriter writer, Guid value, JsonSerializerOptions options)
     {
@@ -16,25 +19,20 @@ public sealed class JsonGuidConverter(GuidConverterOptions? converterOptions) : 
             case GuidConverterOptions.N:
                 writer.WriteStringValue(value.ToString("N"));
                 break;
-
             case GuidConverterOptions.D:
                 writer.WriteStringValue(value.ToString("D"));
                 break;
-
             case GuidConverterOptions.B:
                 writer.WriteStringValue(value.ToString("B"));
                 break;
-
             case GuidConverterOptions.P:
                 writer.WriteStringValue(value.ToString("P"));
                 break;
-
             case GuidConverterOptions.X:
                 writer.WriteStringValue(value.ToString("X"));
                 break;
-
             default:
-                writer.WriteStringValue(value);
+                s_defaultConverter.Write(writer, value, options);
                 break;
         }
     }

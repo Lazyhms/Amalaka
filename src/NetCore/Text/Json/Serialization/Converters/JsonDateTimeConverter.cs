@@ -4,6 +4,9 @@ namespace System.Text.Json.Serialization;
 
 public class JsonDateTimeConverter(string dateFormatString) : JsonConverter<DateTime>
 {
+    private readonly static JsonConverter<DateTime> s_defaultConverter =
+        (JsonConverter<DateTime>)JsonSerializerOptions.Default.GetConverter(typeof(DateTime));
+
     public JsonDateTimeConverter() : this("yyyy-MM-dd HH:mm:ss")
     {
     }
@@ -22,8 +25,7 @@ public class JsonDateTimeConverter(string dateFormatString) : JsonConverter<Date
         {
             return result;
         }
-
-        throw new JsonException();
+        return s_defaultConverter.Read(ref reader, typeToConvert, options);
     }
 
     public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
