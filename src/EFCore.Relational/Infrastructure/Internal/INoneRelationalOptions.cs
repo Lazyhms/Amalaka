@@ -1,4 +1,4 @@
-﻿namespace Amalaka.EntityFrameworkCore.Infrastructure.Internal;
+﻿namespace Microsoft.EntityFrameworkCore.Infrastructure.Internal;
 
 public interface INoneRelationalOptions : ISingletonOptions
 {

@@ -1,6 +1,6 @@
-﻿using Amalaka.EntityFrameworkCore.Infrastructure.Internal;
+﻿using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
 
-namespace Amalaka.EntityFrameworkCore.Metadata.Conventions;
+namespace Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
 public class ConventionSetPlugin(
     INoneRelationalOptions noneRelationalOptions,
@@ -12,6 +12,11 @@ public class ConventionSetPlugin(
 
     public virtual ConventionSet ModifyConventions(ConventionSet conventionSet)
     {
+        if (NoneRelationalOptions.NoneForeignKey)
+        {
+            conventionSet.Remove(typeof(ForeignKeyIndexConvention));
+        }
+
         var columnDefaultValueConvention = new ColumnDefaultValueConvention(Dependencies);
         conventionSet.PropertyAddedConventions.Add(columnDefaultValueConvention);
         conventionSet.PropertyFieldChangedConventions.Add(columnDefaultValueConvention);
@@ -28,14 +33,11 @@ public class ConventionSetPlugin(
         conventionSet.PropertyAddedConventions.Add(columnInsertIgnoreConvention);
         conventionSet.PropertyFieldChangedConventions.Add(columnInsertIgnoreConvention);
 
-        if (NoneRelationalOptions.NoneForeignKey)
-        {
-            conventionSet.Remove(typeof(ForeignKeyIndexConvention));
-        }
-
         var tableSoftDeleteConvention = new TableSoftDeleteConvention(NoneRelationalOptions.SoftDeleteOptions);
-        conventionSet.EntityTypeAddedConventions.Add(tableSoftDeleteConvention);
         conventionSet.ModelFinalizingConventions.Add(tableSoftDeleteConvention);
+
+        var modelCommentConvention = new ModelCommentConvention();
+        conventionSet.ModelFinalizingConventions.Add(modelCommentConvention);
 
         return conventionSet;
     }

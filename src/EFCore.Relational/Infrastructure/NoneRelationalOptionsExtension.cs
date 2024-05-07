@@ -1,7 +1,7 @@
-﻿using Amalaka.EntityFrameworkCore.Extensions;
+﻿using Microsoft.EntityFrameworkCore.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Amalaka.EntityFrameworkCore.Infrastructure;
+namespace Microsoft.EntityFrameworkCore.Infrastructure;
 
 public class NoneRelationalOptionsExtension : IDbContextOptionsExtension
 {
@@ -69,7 +69,7 @@ public class NoneRelationalOptionsExtension : IDbContextOptionsExtension
             => debugInfo["EFCore:UseAmalaka"] = "1";
 
         public override string LogFragment
-            => "using Amalaka.EFCore ";
+            => "using Microsoft.EFCore ";
     }
 
     #region Hidden System.Object members

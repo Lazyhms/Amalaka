@@ -1,45 +1,41 @@
 ﻿using System.Linq.Expressions;
 
-namespace Amalaka.EntityFrameworkCore.Metadata.Conventions;
+namespace Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
-public sealed class TableSoftDeleteConvention(SoftDeleteOptions softDeleteOptions) : IEntityTypeAddedConvention, IModelFinalizingConvention
+internal sealed class TableSoftDeleteConvention(SoftDeleteOptions softDeleteOptions) : IModelFinalizingConvention
 {
-    public void ProcessEntityTypeAdded(
-        IConventionEntityTypeBuilder entityTypeBuilder,
-        IConventionContext<IConventionEntityTypeBuilder> context)
-    {
-        var clrType = entityTypeBuilder.Metadata.ClrType;
-        if (clrType is null)
-        {
-            return;
-        }
-
-        if (softDeleteOptions.Enabled && !clrType.IsDefined<HardDeleteAttribute>())
-        {
-            entityTypeBuilder.Property(typeof(bool), softDeleteOptions.ColumnName)?.HasComment(softDeleteOptions.Comment)?.HasDefaultValue(false)?.HasColumnOrder(100);
-        }
-        else if (!softDeleteOptions.Enabled && clrType.TryGetCustomAttribute<SoftDeleteAttribute>(out var softDeleteAttribute))
-        {
-            entityTypeBuilder.Property(typeof(bool), softDeleteAttribute!.ColumnName)?.HasComment(softDeleteAttribute!.Comment)?.HasDefaultValue(false)?.HasColumnOrder(100);
-        }
-    }
-
     public void ProcessModelFinalizing(IConventionModelBuilder modelBuilder, IConventionContext<IConventionModelBuilder> context)
     {
         foreach (var conventionEntityType in modelBuilder.Metadata.GetEntityTypes())
         {
             if (softDeleteOptions.Enabled && !conventionEntityType.ClrType.IsDefined<HardDeleteAttribute>())
             {
+                ProcessModelFinalizing(modelBuilder, conventionEntityType.Name, softDeleteOptions.ColumnName, softDeleteOptions.Comment);
+
                 ProcessModelFinalizing(conventionEntityType, softDeleteOptions.ColumnName);
             }
             else if (!softDeleteOptions.Enabled && conventionEntityType.ClrType.TryGetCustomAttribute<SoftDeleteAttribute>(out var softDeleteAttribute))
             {
+                ProcessModelFinalizing(modelBuilder, conventionEntityType.Name, softDeleteAttribute!.ColumnName, softDeleteAttribute!.Comment);
+
                 ProcessModelFinalizing(conventionEntityType, softDeleteAttribute!.ColumnName);
             }
         }
     }
 
-    public void ProcessModelFinalizing(IConventionEntityType conventionEntityType, string columnName)
+    private static void ProcessModelFinalizing(IConventionModelBuilder modelBuilder, string name, string columnName, string? comment)
+    {
+        var conventionEntityTypeBuilder = modelBuilder.Entity(name);
+
+        if (null == conventionEntityTypeBuilder)
+        {
+            return;
+        }
+
+        conventionEntityTypeBuilder.Property(typeof(bool), columnName)?.HasComment(comment)?.HasDefaultValue(false)?.HasColumnOrder(100);
+    }
+
+    private static void ProcessModelFinalizing(IConventionEntityType conventionEntityType, string columnName)
     {
         var queryFilterExpression = conventionEntityType.GetQueryFilter();
         var parameterExpression = queryFilterExpression?.Parameters[0] ?? Expression.Parameter(conventionEntityType.ClrType, "filter");

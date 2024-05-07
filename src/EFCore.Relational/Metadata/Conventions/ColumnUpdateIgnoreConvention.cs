@@ -1,6 +1,6 @@
-﻿namespace Amalaka.EntityFrameworkCore.Metadata.Conventions;
+﻿namespace Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
-public sealed class ColumnUpdateIgnoreConvention(ProviderConventionSetBuilderDependencies dependencies) : PropertyAttributeConventionBase<UpdateIgnoreAttribute>(dependencies)
+internal sealed class ColumnUpdateIgnoreConvention(ProviderConventionSetBuilderDependencies dependencies) : PropertyAttributeConventionBase<UpdateIgnoreAttribute>(dependencies)
 {
     protected override void ProcessPropertyAdded(
         IConventionPropertyBuilder propertyBuilder,

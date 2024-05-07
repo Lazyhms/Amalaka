@@ -1,11 +1,9 @@
-﻿using Amalaka.EntityFrameworkCore.Infrastructure.Internal;
-using Amalaka.EntityFrameworkCore.Metadata.Conventions;
-using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
+﻿using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Amalaka.EntityFrameworkCore.Extensions;
+namespace Microsoft.EntityFrameworkCore.Extensions;
 
 public static class EntityFrameworkCoreServiceCollectionExtensions
 {

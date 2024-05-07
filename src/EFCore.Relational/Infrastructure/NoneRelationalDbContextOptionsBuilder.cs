@@ -1,4 +1,4 @@
-﻿using Amalaka.EntityFrameworkCore.Infrastructure;
+﻿using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Microsoft.EntityFrameworkCore.Infrastructure;
 

@@ -1,6 +1,6 @@
-﻿namespace Amalaka.EntityFrameworkCore.Metadata.Conventions;
+﻿namespace Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
-public sealed class ColumnAddIgnoreConvention(ProviderConventionSetBuilderDependencies dependencies) : PropertyAttributeConventionBase<AddIgnoreAttribute>(dependencies)
+internal sealed class ColumnAddIgnoreConvention(ProviderConventionSetBuilderDependencies dependencies) : PropertyAttributeConventionBase<AddIgnoreAttribute>(dependencies)
 {
     protected override void ProcessPropertyAdded(
         IConventionPropertyBuilder propertyBuilder,
@@ -11,6 +11,6 @@ public sealed class ColumnAddIgnoreConvention(ProviderConventionSetBuilderDepend
         if (propertyBuilder.CanSetBeforeSave(PropertySaveBehavior.Ignore))
         {
             propertyBuilder.BeforeSave(PropertySaveBehavior.Ignore);
-        };
+        }
     }
 }

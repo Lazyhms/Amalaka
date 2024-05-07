@@ -1,6 +1,6 @@
-﻿namespace Amalaka.EntityFrameworkCore.Metadata.Conventions;
+﻿namespace Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
-public sealed class ColumnDefaultValueConvention(ProviderConventionSetBuilderDependencies dependencies) : PropertyAttributeConventionBase<DefaultValueAttribute>(dependencies)
+internal sealed class ColumnDefaultValueConvention(ProviderConventionSetBuilderDependencies dependencies) : PropertyAttributeConventionBase<DefaultValueAttribute>(dependencies)
 {
     protected override void ProcessPropertyAdded(
        IConventionPropertyBuilder propertyBuilder,

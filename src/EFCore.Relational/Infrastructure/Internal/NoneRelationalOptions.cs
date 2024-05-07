@@ -1,5 +1,5 @@
-﻿using Amalaka.EntityFrameworkCore.Infrastructure;
-using Amalaka.EntityFrameworkCore.Infrastructure.Internal;
+﻿using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
 
 namespace Microsoft.EntityFrameworkCore.Infrastructure.Internal;
 

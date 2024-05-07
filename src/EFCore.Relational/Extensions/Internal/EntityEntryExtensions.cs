@@ -1,4 +1,4 @@
-﻿using Amalaka.EntityFrameworkCore.Infrastructure.Internal;
+﻿using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Microsoft.EntityFrameworkCore;
