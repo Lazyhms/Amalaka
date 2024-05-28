@@ -1,6 +1,4 @@
-﻿using Amalaka.EntityFrameworkCore.Infrastructure;
-
-namespace Microsoft.EntityFrameworkCore.Infrastructure;
+﻿namespace Microsoft.EntityFrameworkCore.Infrastructure;
 
 public class NoneRelationalMySqlOptionsExtension : NoneRelationalOptionsExtension
 {

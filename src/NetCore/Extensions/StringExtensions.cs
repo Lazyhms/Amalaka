@@ -48,5 +48,5 @@ public static partial class StringExtensions
     }
 
     public static string[] SplitCapitalLetters(this string? source)
-        => source.IsNullOrWhiteSpace() ? ([]) : ([.. RegexCapitalLetters().Matches(source!).Select(s => s.Value)]);
+        => source.IsNullOrWhiteSpace() ? [] : [.. RegexCapitalLetters().Matches(source!).Select(s => s.Value)];
 }
