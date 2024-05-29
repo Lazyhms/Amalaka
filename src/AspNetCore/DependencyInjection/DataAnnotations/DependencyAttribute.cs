@@ -1,7 +1,7 @@
 ﻿namespace Microsoft.Extensions.DependencyInjection;
 
-[AttributeUsage(AttributeTargets.Interface, AllowMultiple = false)]
-public sealed class DependencyAttribute(ServiceLifetime serviceLifetime) : Attribute
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+public sealed class DependencyAttribute : Attribute
 {
-    public ServiceLifetime ServiceLifetime { get; set; } = serviceLifetime;
+    public object? StoredKey { get; set; }
 }

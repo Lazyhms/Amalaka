@@ -10,18 +10,16 @@ public class NoneRelationalSqlServerMigrationsSqlGenerator(MigrationsSqlGenerato
     {
         var addColumnOperations = new List<AddColumnOperation>();
         var columns = model?.GetRelationalModel().FindTable(operation.Name, operation.Schema)?.Columns ?? Enumerable.Empty<IColumn>();
-        foreach (var item in columns)
+
+        for (int i = 0; i < operation.Columns.Count; i++)
         {
-            var column = operation.Columns.FirstOrDefault(f => f.Name == item.Name);
-            column?.AddAnnotation(RelationalAnnotationNames.ColumnOrder, item.Order ?? 2);
-            if (column != null)
-            {
-                addColumnOperations.Add(column);
-            }
+            var column = columns.FirstOrDefault(f => f.Name == operation.Columns[i].Name);
+            operation.Columns[i].SetAnnotation(RelationalAnnotationNames.ColumnOrder, column?.Order ?? 20 + i);
+            addColumnOperations.Add(operation.Columns[i]);
         }
 
         operation.Columns.Clear();
-        operation.Columns.AddRange(addColumnOperations.OrderBy(o => o.GetAnnotation(RelationalAnnotationNames.ColumnOrder).Value).ThenBy(o => o.Name));
+        operation.Columns.AddRange(addColumnOperations.OrderBy(o => o.GetAnnotation(RelationalAnnotationNames.ColumnOrder).Value));
 
         base.CreateTableColumns(operation, model, builder);
     }

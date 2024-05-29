@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection.Extensions;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -14,29 +13,48 @@ public static class RegisterAssemblyServiceCollectionExtensions
 
     public static IServiceCollection RegisterDependencyServiceFromAssembly(this IServiceCollection services, Assembly assembly)
     {
-        var assemblyServiceTypes = assembly.GetTypes();
-
-        assemblyServiceTypes.Where(w => w.IsInterface && (w.IsDefined<DependencyAttribute>() || _dependencyTypeMapping.Any(a => a.IsAssignableFrom(w)))).ForEach(serviceType =>
+        assembly.GetTypes().Where(w => w.IsInterface && _dependencyTypeMapping.Any(a => a.IsAssignableFrom(w))).ForEach(serviceType =>
         {
-            var serviceDescriptor = serviceType.GetCustomAttribute<DependencyAttribute>();
-            var implementationTypes = assemblyServiceTypes.Where(implementationType => serviceType.IsAssignableFrom(implementationType) && serviceType != implementationType);
+            var implementationTypes = assembly.GetTypes().Where(w => w.IsClass && serviceType.IsAssignableFrom(w));
             if (implementationTypes is not null && implementationTypes.Any())
             {
-                implementationTypes.ForEach(implementationType =>
+                foreach (var implementationType in implementationTypes)
                 {
-                    if (typeof(IScoped).IsAssignableFrom(serviceType) || ServiceLifetime.Scoped == serviceDescriptor?.ServiceLifetime)
+                    var serviceDescriptor = serviceType.GetCustomAttribute<DependencyAttribute>();
+                    if (typeof(IScoped).IsAssignableFrom(serviceType))
                     {
-                        services.TryAddScoped(serviceType, implementationType!);
+                        if (serviceDescriptor?.StoredKey == null)
+                        {
+                            services.AddScoped(serviceType, implementationType!);
+                        }
+                        else
+                        {
+                            services.AddKeyedScoped(serviceType, serviceDescriptor.StoredKey, implementationType!);
+                        }
                     }
-                    if (typeof(ISingleton).IsAssignableFrom(serviceType) || ServiceLifetime.Singleton == serviceDescriptor?.ServiceLifetime)
+                    if (typeof(ISingleton).IsAssignableFrom(serviceType))
                     {
-                        services.TryAddSingleton(serviceType, implementationType!);
+                        if (serviceDescriptor?.StoredKey == null)
+                        {
+                            services.AddSingleton(serviceType, implementationType!);
+                        }
+                        else
+                        {
+                            services.AddKeyedSingleton(serviceType, serviceDescriptor.StoredKey, implementationType!);
+                        }
                     }
-                    if (typeof(ITransient).IsAssignableFrom(serviceType) || ServiceLifetime.Transient == serviceDescriptor?.ServiceLifetime)
+                    if (typeof(ITransient).IsAssignableFrom(serviceType))
                     {
-                        services.TryAddTransient(serviceType, implementationType!);
+                        if (serviceDescriptor?.StoredKey == null)
+                        {
+                            services.AddTransient(serviceType, implementationType!);
+                        }
+                        else
+                        {
+                            services.AddKeyedTransient(serviceType, serviceDescriptor.StoredKey, implementationType!);
+                        }
                     }
-                });
+                }
             }
         });
 
