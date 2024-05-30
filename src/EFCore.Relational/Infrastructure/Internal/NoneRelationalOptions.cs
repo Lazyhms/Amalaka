@@ -1,7 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
-
-namespace Microsoft.EntityFrameworkCore.Infrastructure.Internal;
+﻿namespace Microsoft.EntityFrameworkCore.Infrastructure.Internal;
 
 public class NoneRelationalOptions : INoneRelationalOptions
 {

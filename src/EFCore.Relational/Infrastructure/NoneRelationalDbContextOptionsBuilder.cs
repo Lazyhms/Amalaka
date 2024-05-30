@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Infrastructure;
-
-namespace Microsoft.EntityFrameworkCore.Infrastructure;
+﻿namespace Microsoft.EntityFrameworkCore.Infrastructure;
 
 public abstract class NoneRelationalDbContextOptionsBuilder<TBuilder, TExtension>(DbContextOptionsBuilder optionsBuilder) : IRelationalDbContextOptionsBuilderInfrastructure
     where TBuilder : NoneRelationalDbContextOptionsBuilder<TBuilder, TExtension>
