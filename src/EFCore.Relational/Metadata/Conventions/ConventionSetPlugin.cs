@@ -39,6 +39,9 @@ public class ConventionSetPlugin(
         var modelCommentConvention = new ModelCommentConvention();
         conventionSet.ModelFinalizingConventions.Add(modelCommentConvention);
 
+        var columnOrderConvention = new ColumnOrderConvention();
+        conventionSet.ModelFinalizingConventions.Add(columnOrderConvention);
+
         return conventionSet;
     }
 }

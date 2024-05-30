@@ -2,30 +2,23 @@
 
 namespace Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
-internal sealed class ModelCommentConvention : IModelFinalizingConvention
+public sealed class ModelCommentConvention : IModelFinalizingConvention
 {
     public void ProcessModelFinalizing(IConventionModelBuilder modelBuilder, IConventionContext<IConventionModelBuilder> context)
     {
-        foreach (var conventionEntityType in modelBuilder.Metadata.GetEntityTypes())
+        foreach (var xmlFile in Directory.GetFiles(AppContext.BaseDirectory, "*.xml"))
         {
-            var conventionEntityTypeBuilder = modelBuilder.Entity(conventionEntityType.Name);
+            using var stream = File.OpenRead(xmlFile);
+            var xmlCommentsDocument = new XmlCommentsDocument(new XPathDocument(stream));
 
-            if (null == conventionEntityTypeBuilder)
+            foreach (var conventionEntityType in modelBuilder.Metadata.GetEntityTypes())
             {
-                return;
-            }
-
-            foreach (var xmlFile in Directory.GetFiles(AppContext.BaseDirectory, "*.xml"))
-            {
-                using var stream = File.OpenRead(xmlFile);
-                var xmlCommentsDocument = new XmlCommentsDocument(new XPathDocument(stream));
-
                 if (string.IsNullOrWhiteSpace(conventionEntityType.GetComment()))
                 {
-                    conventionEntityTypeBuilder.HasComment(xmlCommentsDocument.GetMemberNameForType(conventionEntityTypeBuilder.Metadata.ClrType));
+                    conventionEntityType.SetComment(xmlCommentsDocument.GetMemberNameForType(conventionEntityType.ClrType));
                 }
 
-                foreach (var conventionProperty in conventionEntityTypeBuilder.Metadata.GetProperties().Where(w => !w.IsShadowProperty()))
+                foreach (var conventionProperty in conventionEntityType.GetProperties().Where(w => !w.IsShadowProperty()))
                 {
                     if (string.IsNullOrWhiteSpace(conventionProperty.GetComment()))
                     {
