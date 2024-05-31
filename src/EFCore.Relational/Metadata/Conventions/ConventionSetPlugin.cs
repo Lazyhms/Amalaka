@@ -15,7 +15,6 @@ public class ConventionSetPlugin(
         if (NoneRelationalOptions.NoneForeignKey)
         {
             conventionSet.Remove(typeof(ForeignKeyIndexConvention));
-            conventionSet.Remove(typeof(ForeignKeyPropertyDiscoveryConvention));
         }
 
         var columnDefaultValueConvention = new ColumnDefaultValueConvention(Dependencies);

@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Diagnostics;
-
-namespace Microsoft.EntityFrameworkCore;
+﻿namespace Microsoft.EntityFrameworkCore;
 
 public static class DbContextOptionsBuilderExtensions
 {
@@ -12,7 +10,4 @@ public static class DbContextOptionsBuilderExtensions
 
     public static TExtension GetOrCreateExtension<TExtension>(this DbContextOptionsBuilder optionsBuilder) where TExtension : NoneRelationalOptionsExtension, new()
         => optionsBuilder.Options.FindExtension<TExtension>() ?? new TExtension();
-
-    public static DbContextOptionsBuilder AddExceptionInterceptors(this DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.AddInterceptors(new SaveChangesExceptionInterceptor());
 }
