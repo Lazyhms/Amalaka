@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Microsoft.EntityFrameworkCore;
+namespace System.Xml.XPath;
 
 internal class XmlCommentsNodeNameHelper
 {

@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Text.RegularExpressions;
 
-namespace Microsoft.EntityFrameworkCore;
+namespace System.Xml.XPath;
 
 internal static partial class XmlCommentsTextHelper
 {

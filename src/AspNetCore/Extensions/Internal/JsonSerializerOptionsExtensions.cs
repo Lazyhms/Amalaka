@@ -1,6 +1,7 @@
 ﻿using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 using System.Text.Unicode;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -21,6 +22,11 @@ internal static class JsonSerializerOptionsExtensions
         serializerOptions.Converters.Add(new JsonStringConverter());
         serializerOptions.Converters.Add(new JsonDateTimeConverter());
         serializerOptions.Converters.Add(new JsonDateTimeOffsetConverter());
+
+        serializerOptions.TypeInfoResolver = new DefaultJsonTypeInfoResolver
+        {
+            Modifiers = { EnumCommentResolver.AddCommentModifier }
+        };
 
         return serializerOptions;
     }

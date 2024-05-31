@@ -1,6 +1,4 @@
-﻿using System.Xml.XPath;
-
-namespace Microsoft.EntityFrameworkCore;
+﻿namespace System.Xml.XPath;
 
 internal class XmlCommentsDocument(XPathDocument xmlDoc)
 {
@@ -11,6 +9,13 @@ internal class XmlCommentsDocument(XPathDocument xmlDoc)
     public string? GetMemberNameForType(Type type)
     {
         var memberXPath = XmlCommentsNodeNameHelper.GetMemberNameForType(type);
+        var xPathNavigator = _xmlNavigator.SelectSingleNode(string.Format(SummaryXPath, memberXPath));
+        return XmlCommentsTextHelper.Humanize(xPathNavigator?.Value);
+    }
+
+    public string? GetMemberNameForFieldOrProperty(FieldInfo fieldInfo)
+    {
+        var memberXPath = XmlCommentsNodeNameHelper.GetMemberNameForFieldOrProperty(fieldInfo);
         var xPathNavigator = _xmlNavigator.SelectSingleNode(string.Format(SummaryXPath, memberXPath));
         return XmlCommentsTextHelper.Humanize(xPathNavigator?.Value);
     }
