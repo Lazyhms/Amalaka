@@ -27,18 +27,18 @@ public static partial class StringExtensions
 
     public static bool TrySplit(this string? source, char separator, out string[] result)
     {
-        if (source.IsNullOrWhiteSpace())
+        if (string.IsNullOrWhiteSpace(source))
         {
             result = [];
             return false;
         }
-        result = source!.Split(separator);
+        result = source.Split(separator);
         return true;
     }
 
     public static bool TrySplit(this string? source, string? separator, out string[] result)
     {
-        if (source.IsNullOrWhiteSpace())
+        if (string.IsNullOrWhiteSpace(source))
         {
             result = [];
             return false;
@@ -48,5 +48,5 @@ public static partial class StringExtensions
     }
 
     public static string[] SplitCapitalLetters(this string? source)
-        => source.IsNullOrWhiteSpace() ? [] : [.. RegexCapitalLetters().Matches(source!).Select(s => s.Value)];
+        => string.IsNullOrWhiteSpace(source) ? [] : [.. RegexCapitalLetters().Matches(source!).Select(s => s.Value)];
 }

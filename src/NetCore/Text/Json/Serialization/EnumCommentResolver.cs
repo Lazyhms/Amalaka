@@ -46,10 +46,10 @@ public static class EnumCommentResolver
 
     private static string GetDescriptionOrComment(FieldInfo fieldInfo)
     {
-        var comment = fieldInfo.GetCustomAttribute<DescriptionAttribute>()?.Description;
-        if (comment.IsNotNullOrWhiteSpace())
+        var description = fieldInfo.GetCustomAttribute<DescriptionAttribute>()?.Description;
+        if (!string.IsNullOrWhiteSpace(description))
         {
-            return comment!;
+            return description;
         }
 
         foreach (var xmlFile in Directory.GetFiles(AppContext.BaseDirectory, "*.xml"))

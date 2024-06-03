@@ -18,8 +18,11 @@ internal static class JsonSerializerOptionsExtensions
         serializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
         serializerOptions.Encoder = JavaScriptEncoder.Create(UnicodeRanges.All);
 
+        serializerOptions.Converters.Add(new DataSetConverter());
         serializerOptions.Converters.Add(new JsonGuidConverter());
+        serializerOptions.Converters.Add(new DataTableConverter());
         serializerOptions.Converters.Add(new JsonStringConverter());
+        serializerOptions.Converters.Add(new JsonDateOnlyConverter());
         serializerOptions.Converters.Add(new JsonDateTimeConverter());
         serializerOptions.Converters.Add(new JsonDateTimeOffsetConverter());
 
