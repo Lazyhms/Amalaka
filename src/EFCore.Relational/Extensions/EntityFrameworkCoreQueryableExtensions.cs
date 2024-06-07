@@ -8,7 +8,7 @@ namespace Microsoft.EntityFrameworkCore
     {
         public TOuter Left { get; internal set; } = default!;
 
-        internal IEnumerable<TInner?> Right { get; init; } = [];
+        internal IEnumerable<TInner> Right { get; init; } = [];
     }
 
     public static partial class EntityFrameworkCoreQueryableExtensions
