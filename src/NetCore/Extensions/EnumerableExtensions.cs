@@ -47,7 +47,7 @@ public static partial class EnumerableExtensions
         => condition ? source.Where(predicate) : source;
 
     public static IEnumerable<TResult> LeftJoin<TOuter, TInner, TKey, TResult>(
-        this IEnumerable<TOuter> outer,
+        this IQueryable<TOuter> outer,
         IEnumerable<TInner> inner,
         Func<TOuter, TKey> outerKeySelector,
         Func<TInner, TKey> innerKeySelector,

@@ -4,6 +4,13 @@ using System.Linq.Expressions;
 
 namespace Microsoft.EntityFrameworkCore
 {
+    public class GroupJoined<TOuter, TInner>
+    {
+        public required TOuter Left { get; init; }
+
+        internal IEnumerable<TInner?> Right { get; init; } = [];
+    }
+
     public static partial class EntityFrameworkCoreQueryableExtensions
     {
         public static IOrderedQueryable<TSource> OrderBy<TSource>(this IQueryable<TSource> source, string propertyOrFieldName) where TSource : class
@@ -64,26 +71,18 @@ namespace Microsoft.EntityFrameworkCore
                     : source);
         }
 
-        public static (int Total, List<TSource>) Pagination<TSource>(this IQueryable<TSource> source, int pageIndex, int pageSize)
-        {
-            var count = source.Count();
-            if (count == 0)
-            {
-                return (0, []);
-            }
-            var data = source.Skip(pageSize * (pageIndex - 1)).Take(pageSize).ToList();
-            return (count, data);
-        }
+        public static IQueryable<TSource> Pagination<TSource>(this IQueryable<TSource> source, int pageIndex, int pageSize)
+            => source.Skip(pageSize * (pageIndex - 1)).Take(pageSize);
 
-        public static async Task<(int Total, List<TSource>)> PaginationAsync<TSource>(this IQueryable<TSource> source, int pageIndex, int pageSize)
+        public static IQueryable<TResult> LeftJoin<TOuter, TInner, TKey, TResult>(
+            this IQueryable<TOuter> outer,
+            IEnumerable<TInner> inner,
+            Expression<Func<TOuter, TKey>> outerKeySelector,
+            Expression<Func<TInner, TKey>> innerKeySelector,
+            Expression<Func<GroupJoined<TOuter, TInner>, TInner?, TResult>> resultSelector)
         {
-            var count = await source.CountAsync();
-            if (count == 0)
-            {
-                return (0, []);
-            }
-            var data = await source.Skip(pageSize * (pageIndex - 1)).Take(pageSize).ToListAsync();
-            return (count, data);
+            return outer.GroupJoin(inner, outerKeySelector, innerKeySelector, (outer, inner) => new GroupJoined<TOuter, TInner> { Left = outer, Right = inner })
+                .SelectMany(sm => sm.Right.DefaultIfEmpty(), resultSelector);
         }
     }
 }
