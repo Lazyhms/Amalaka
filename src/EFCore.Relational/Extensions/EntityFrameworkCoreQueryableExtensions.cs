@@ -6,7 +6,7 @@ namespace Microsoft.EntityFrameworkCore
 {
     public class GroupJoined<TOuter, TInner>
     {
-        public required TOuter Left { get; init; }
+        public TOuter Left { get; internal set; } = default!;
 
         internal IEnumerable<TInner?> Right { get; init; } = [];
     }
