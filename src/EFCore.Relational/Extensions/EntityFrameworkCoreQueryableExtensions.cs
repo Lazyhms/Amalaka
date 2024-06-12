@@ -8,7 +8,7 @@ namespace Microsoft.EntityFrameworkCore
     {
         public TOuter Left { get; internal set; } = default!;
 
-        internal IEnumerable<TInner> Right { get; init; } = [];
+        public TInner Right { get; internal init; } = default!;
     }
 
     public static partial class EntityFrameworkCoreQueryableExtensions
@@ -79,10 +79,10 @@ namespace Microsoft.EntityFrameworkCore
             IEnumerable<TInner> inner,
             Expression<Func<TOuter, TKey>> outerKeySelector,
             Expression<Func<TInner, TKey>> innerKeySelector,
-            Expression<Func<GroupJoined<TOuter, TInner>, TInner?, TResult>> resultSelector)
+            Expression<Func<GroupJoined<TOuter, TInner>, TResult>> resultSelector)
         {
-            return outer.GroupJoin(inner, outerKeySelector, innerKeySelector, (outer, inner) => new GroupJoined<TOuter, TInner> { Left = outer, Right = inner })
-                .SelectMany(sm => sm.Right.DefaultIfEmpty(), resultSelector);
+            return outer.GroupJoin(inner, outerKeySelector, innerKeySelector, (outer, inner) => new { Left = outer, Right = inner })
+                .SelectMany(sm => sm.Right.DefaultIfEmpty(), (o, i) => new GroupJoined<TOuter, TInner> { Left = o.Left, Right = i ?? default! }).Select(resultSelector);
         }
     }
 }
