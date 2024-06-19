@@ -4,7 +4,7 @@ using System.Xml.XPath;
 
 namespace System.Text.Json.Serialization;
 
-public static class EnumCommentResolver
+public static class EnumNameResolver
 {
     private readonly static ConcurrentDictionary<FieldInfo, string> _mapping = new();
 
@@ -17,7 +17,7 @@ public static class EnumCommentResolver
 
         foreach (var item in jsonTypeInfo.Type.GetProperties().Where(w => w.PropertyType.IsEnum))
         {
-            var jsonPropertyName = $"{item.Name}Comment";
+            var jsonPropertyName = (item.GetCustomAttribute<JsonEnumNameAttribute>()?.PropertyName ?? string.Empty).IsNullOrWhiteSpace($"{item.Name}Name")!;
             var jsonNamingPolicy = jsonTypeInfo.Options.PropertyNamingPolicy;
             if (jsonNamingPolicy is not null)
             {

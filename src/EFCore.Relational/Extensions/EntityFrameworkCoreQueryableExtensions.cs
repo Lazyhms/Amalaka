@@ -4,11 +4,18 @@ using System.Linq.Expressions;
 
 namespace Microsoft.EntityFrameworkCore
 {
-    public class GroupJoined<TOuter, TInner>
+    public class Joined<TOuter, TInner>
     {
         public TOuter Left { get; internal set; } = default!;
 
         public TInner Right { get; internal init; } = default!;
+    }
+
+    public class GroupJoined<TOuter, TInner>
+    {
+        public TOuter Left { get; internal set; } = default!;
+
+        public IEnumerable<TInner> Right { get; internal init; } = [];
     }
 
     public static partial class EntityFrameworkCoreQueryableExtensions
@@ -79,10 +86,24 @@ namespace Microsoft.EntityFrameworkCore
             IEnumerable<TInner> inner,
             Expression<Func<TOuter, TKey>> outerKeySelector,
             Expression<Func<TInner, TKey>> innerKeySelector,
-            Expression<Func<GroupJoined<TOuter, TInner>, TResult>> resultSelector)
+            Expression<Func<Joined<TOuter, TInner>, TResult>> resultSelector)
         {
             return outer.GroupJoin(inner, outerKeySelector, innerKeySelector, (outer, inner) => new { Left = outer, Right = inner })
-                .SelectMany(sm => sm.Right.DefaultIfEmpty(), (o, i) => new GroupJoined<TOuter, TInner> { Left = o.Left, Right = i ?? default! }).Select(resultSelector);
+                .SelectMany(sm => sm.Right, (o, i) => new Joined<TOuter, TInner> { Left = o.Left, Right = i }).Select(resultSelector);
+        }
+
+        public static IQueryable<TResult> LeftJoin<TOuter, TInner, TKey, TResult>(
+            this IQueryable<TOuter> outer,
+            IEnumerable<TInner> inner,
+            Expression<Func<TOuter, TKey>> outerKeySelector,
+            Expression<Func<TInner, TKey>> innerKeySelector,
+            Expression<Func<GroupJoined<TOuter, TInner>, TInner, TResult>> resultSelector)
+        {
+            return outer.GroupJoin(inner, outerKeySelector, innerKeySelector, (outer, inner) => new GroupJoined<TOuter, TInner>
+            {
+                Left = outer,
+                Right = inner
+            }).SelectMany(sm => sm.Right, resultSelector);
         }
     }
 }

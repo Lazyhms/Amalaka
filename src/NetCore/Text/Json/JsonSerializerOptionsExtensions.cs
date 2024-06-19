@@ -1,14 +1,13 @@
 ﻿using System.Text.Encodings.Web;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
 using System.Text.Unicode;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace System.Text.Json;
 
-internal static class JsonSerializerOptionsExtensions
+public static class JsonSerializerOptionsExtensions
 {
-    public static JsonSerializerOptions Default(this JsonSerializerOptions serializerOptions)
+    public static JsonSerializerOptions ApplyDefault(this JsonSerializerOptions serializerOptions)
     {
         serializerOptions.WriteIndented = true;
         serializerOptions.AllowTrailingCommas = true;
@@ -28,7 +27,7 @@ internal static class JsonSerializerOptionsExtensions
 
         serializerOptions.TypeInfoResolver = new DefaultJsonTypeInfoResolver
         {
-            Modifiers = { EnumCommentResolver.AddCommentModifier }
+            Modifiers = { EnumNameResolver.AddCommentModifier }
         };
 
         return serializerOptions;
