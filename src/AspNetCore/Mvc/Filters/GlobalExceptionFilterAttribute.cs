@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 
 namespace Microsoft.AspNetCore.Mvc.Filters;
 
@@ -11,7 +12,7 @@ public sealed class GlobalExceptionFilterAttribute(ILogger<GlobalExceptionFilter
     {
         if (context.Exception is Exception handledException)
         {
-            logger.LogError(context.Exception, "Title:系统异常 HResult:{HResult}", handledException.HResult);
+            logger.LogError(handledException, "Title:系统异常 HResult:{HResult}", handledException.HResult);
 
             context.ExceptionHandled = true;
             context.HttpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;

@@ -11,7 +11,7 @@ public sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logge
     {
         if (exception is Exception handledException)
         {
-            logger.LogError(exception, "Title:系统器异常 HResult:{HResult}", handledException.HResult);
+            logger.LogError(handledException, "Title:系统器异常 HResult:{HResult}", handledException.HResult);
 
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
             await context.Response.WriteAsJsonAsync(new

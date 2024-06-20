@@ -9,7 +9,7 @@ public sealed class BusinessExceptionHandler(ILogger<BusinessExceptionHandler> l
     {
         if (exception is Exception handledException)
         {
-            logger.LogError(exception, "Title:业务异常 HResult:{HResult}", handledException.HResult);
+            logger.LogError(handledException, "Title:业务异常 HResult:{HResult}", handledException.HResult);
 
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
             await context.Response.WriteAsJsonAsync(new

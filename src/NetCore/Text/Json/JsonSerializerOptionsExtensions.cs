@@ -27,7 +27,7 @@ public static class JsonSerializerOptionsExtensions
 
         serializerOptions.TypeInfoResolver = new DefaultJsonTypeInfoResolver
         {
-            Modifiers = { EnumNameResolver.AddCommentModifier }
+            Modifiers = { JsonPropertyNamedResolver.AddJsonPropertyNamedModifier }
         };
 
         return serializerOptions;

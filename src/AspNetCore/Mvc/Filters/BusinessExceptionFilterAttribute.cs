@@ -9,7 +9,7 @@ public sealed class BusinessExceptionFilterAttribute(ILogger<BusinessExceptionFi
     {
         if (context.Exception is BusinessException handledException)
         {
-            logger.LogError(context.Exception, "Title:业务异常 HResult:{HResult}", handledException.HResult);
+            logger.LogError(handledException, "Title:业务异常 HResult:{HResult}", handledException.HResult);
 
             context.ExceptionHandled = true;
             context.HttpContext.Response.StatusCode = StatusCodes.Status200OK;

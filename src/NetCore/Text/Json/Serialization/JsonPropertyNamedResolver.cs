@@ -4,11 +4,11 @@ using System.Xml.XPath;
 
 namespace System.Text.Json.Serialization;
 
-public static class EnumNameResolver
+public static class JsonPropertyNamedResolver
 {
     private readonly static ConcurrentDictionary<FieldInfo, string> _mapping = new();
 
-    public static void AddCommentModifier(JsonTypeInfo jsonTypeInfo)
+    public static void AddJsonPropertyNamedModifier(JsonTypeInfo jsonTypeInfo)
     {
         if (jsonTypeInfo.Kind != JsonTypeInfoKind.Object)
         {
@@ -17,7 +17,7 @@ public static class EnumNameResolver
 
         foreach (var item in jsonTypeInfo.Type.GetProperties().Where(w => w.PropertyType.IsEnum))
         {
-            var jsonPropertyName = (item.GetCustomAttribute<JsonEnumNameAttribute>()?.PropertyName ?? string.Empty).IsNullOrWhiteSpace($"{item.Name}Name")!;
+            var jsonPropertyName = (item.GetCustomAttribute<JsonPropertyEnumNamed>()?.Name ?? string.Empty).IsNullOrWhiteSpace($"{item.Name}Name")!;
             var jsonNamingPolicy = jsonTypeInfo.Options.PropertyNamingPolicy;
             if (jsonNamingPolicy is not null)
             {
@@ -39,6 +39,29 @@ public static class EnumNameResolver
                 }
 
                 return _mapping.GetOrAdd(fieldInfo, GetDescriptionOrComment(fieldInfo));
+            };
+            jsonTypeInfo.Properties.Add(jsonPropertyInfo);
+        }
+
+
+        foreach (var item in jsonTypeInfo.Type.GetProperties().Where(w => w.PropertyType.IsInteger()))
+        {
+            var jsonPropertyNamed = item.GetCustomAttribute<JsonPropertyNamed>();
+            if (jsonPropertyNamed is null || 0 == jsonPropertyNamed.Values.Length)
+            {
+                continue;
+            }
+            var jsonPropertyName = (jsonPropertyNamed.Name ?? string.Empty).IsNullOrWhiteSpace($"{item.Name}Name")!;
+            var jsonNamingPolicy = jsonTypeInfo.Options.PropertyNamingPolicy;
+            if (jsonNamingPolicy is not null)
+            {
+                jsonPropertyName = jsonNamingPolicy.ConvertName(jsonPropertyName);
+            }
+            var jsonPropertyInfo = jsonTypeInfo.CreateJsonPropertyInfo(typeof(string), jsonPropertyName);
+            jsonPropertyInfo.Get = (obj) =>
+            {
+                return int.TryParse(item.GetValue(obj)?.ToString(), out var value) && value >= 0 && value <= jsonPropertyNamed.Values.Length
+                    ? jsonPropertyNamed.Values[value] : (jsonPropertyNamed.Default ?? string.Empty);
             };
             jsonTypeInfo.Properties.Add(jsonPropertyInfo);
         }
