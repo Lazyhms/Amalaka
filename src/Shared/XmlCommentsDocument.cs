@@ -13,16 +13,9 @@ internal class XmlCommentsDocument(XPathDocument xmlDoc)
         return XmlCommentsTextHelper.Humanize(xPathNavigator?.Value);
     }
 
-    public string? GetMemberNameForFieldOrProperty(FieldInfo fieldInfo)
+    public string? GetMemberNameForFieldOrProperty(MemberInfo memberInfo)
     {
-        var memberXPath = XmlCommentsNodeNameHelper.GetMemberNameForFieldOrProperty(fieldInfo);
-        var xPathNavigator = _xmlNavigator.SelectSingleNode(string.Format(SummaryXPath, memberXPath));
-        return XmlCommentsTextHelper.Humanize(xPathNavigator?.Value);
-    }
-
-    public string? GetMemberNameForFieldOrProperty(PropertyInfo propertyInfo)
-    {
-        var memberXPath = XmlCommentsNodeNameHelper.GetMemberNameForFieldOrProperty(propertyInfo);
+        var memberXPath = XmlCommentsNodeNameHelper.GetMemberNameForFieldOrProperty(memberInfo);
         var xPathNavigator = _xmlNavigator.SelectSingleNode(string.Format(SummaryXPath, memberXPath));
         return XmlCommentsTextHelper.Humanize(xPathNavigator?.Value);
     }

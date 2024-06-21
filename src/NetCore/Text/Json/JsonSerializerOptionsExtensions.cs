@@ -25,10 +25,9 @@ public static class JsonSerializerOptionsExtensions
         serializerOptions.Converters.Add(new JsonDateTimeConverter());
         serializerOptions.Converters.Add(new JsonDateTimeOffsetConverter());
 
-        serializerOptions.TypeInfoResolver = new DefaultJsonTypeInfoResolver
-        {
-            Modifiers = { JsonPropertyNamedResolver.AddJsonPropertyNamedModifier }
-        };
+        serializerOptions.TypeInfoResolver = serializerOptions.TypeInfoResolver?
+            .WithAddedModifier(JsonPropertyResolver.AddEnumModifier)
+            .WithAddedModifier(JsonPropertyResolver.AddIntegerModifier);
 
         return serializerOptions;
     }

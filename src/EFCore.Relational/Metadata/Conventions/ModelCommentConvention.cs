@@ -8,7 +8,7 @@ public sealed class ModelCommentConvention : IModelFinalizingConvention
     {
         foreach (var xmlFile in Directory.GetFiles(AppContext.BaseDirectory, "*.xml"))
         {
-            using var stream = File.OpenRead(xmlFile);
+            using var stream = new FileStream(xmlFile, FileMode.Open, FileAccess.Read, FileShare.Read);
             var xmlCommentsDocument = new XmlCommentsDocument(new XPathDocument(stream));
 
             foreach (var conventionEntityType in modelBuilder.Metadata.GetEntityTypes())
