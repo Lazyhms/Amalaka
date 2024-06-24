@@ -6,16 +6,16 @@ namespace Microsoft.EntityFrameworkCore
 {
     public class Joined<TOuter, TInner>
     {
-        public TOuter Left { get; internal set; } = default!;
+        public TOuter Outer { get; internal set; } = default!;
 
-        public TInner Right { get; internal init; } = default!;
+        public TInner? Inner { get; internal init; } = default!;
     }
 
     public class GroupJoined<TOuter, TInner>
     {
-        public TOuter Left { get; internal set; } = default!;
+        public TOuter Outer { get; internal set; } = default!;
 
-        public IEnumerable<TInner> Right { get; internal init; } = [];
+        internal IEnumerable<TInner> Inner { get; init; } = [];
     }
 
     public static partial class EntityFrameworkCoreQueryableExtensions
@@ -87,23 +87,16 @@ namespace Microsoft.EntityFrameworkCore
             Expression<Func<TOuter, TKey>> outerKeySelector,
             Expression<Func<TInner, TKey>> innerKeySelector,
             Expression<Func<Joined<TOuter, TInner>, TResult>> resultSelector)
-        {
-            return outer.GroupJoin(inner, outerKeySelector, innerKeySelector, (outer, inner) => new { Left = outer, Right = inner })
-                .SelectMany(sm => sm.Right, (o, i) => new Joined<TOuter, TInner> { Left = o.Left, Right = i }).Select(resultSelector);
-        }
+            => outer.GroupJoin(inner, outerKeySelector, innerKeySelector, (outer, inner) => new { Outer = outer, Inner = inner })
+                .SelectMany(sm => sm.Inner.DefaultIfEmpty(), (o, i) => new Joined<TOuter, TInner> { Outer = o.Outer, Inner = i }).Select(resultSelector);
 
         public static IQueryable<TResult> LeftJoin<TOuter, TInner, TKey, TResult>(
             this IQueryable<TOuter> outer,
             IEnumerable<TInner> inner,
             Expression<Func<TOuter, TKey>> outerKeySelector,
             Expression<Func<TInner, TKey>> innerKeySelector,
-            Expression<Func<GroupJoined<TOuter, TInner>, TInner, TResult>> resultSelector)
-        {
-            return outer.GroupJoin(inner, outerKeySelector, innerKeySelector, (outer, inner) => new GroupJoined<TOuter, TInner>
-            {
-                Left = outer,
-                Right = inner
-            }).SelectMany(sm => sm.Right, resultSelector);
-        }
+            Expression<Func<GroupJoined<TOuter, TInner>, TInner?, TResult>> resultSelector)
+            => outer.GroupJoin(inner, outerKeySelector, innerKeySelector, (outer, inner) => new GroupJoined<TOuter, TInner> { Outer = outer, Inner = inner })
+                .SelectMany(sm => sm.Inner.DefaultIfEmpty(), resultSelector);
     }
 }
